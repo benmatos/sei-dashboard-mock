@@ -1,0 +1,380 @@
+{
+  "processos_abertos": {
+    "total_registros": 47,
+    "pagina_atual": 1,
+    "total_paginas": 1,
+    "registros": [
+      {
+        "id_processo": "100000001",
+        "protocolo_formatado": "00000.001234/2026-15",
+        "numero": "00000.001234/2026-15",
+        "tipo_processo": {
+          "id_tipo_processo": "51",
+          "nome": "Aquisição de Material Permanente"
+        },
+        "especificacao": "Compra de notebooks para TI",
+        "situacao": "A",
+        "nivel_acesso": "0",
+        "hipotese_legal": null,
+        "data_autuacao": "2026-01-08T09:14:22",
+        "data_ultima_atualizacao": "2026-05-20T14:33:10",
+        "unidade_autuadora": {
+          "id_unidade": "110000592",
+          "sigla": "DTIC",
+          "descricao": "Diretoria de Tecnologia da Informação e Comunicação"
+        },
+        "interessados": ["Empresa X Ltda.", "Setor de Patrimônio"],
+        "observacao": "Urgente — aprovação da diretoria pendente",
+        "link": "https://sei.exemplo.gov.br/sei/controlador.php?acao=arvore_visualizar&id_procedimento=100000001"
+      },
+      {
+        "id_processo": "100000002",
+        "protocolo_formatado": "00000.002891/2026-07",
+        "numero": "00000.002891/2026-07",
+        "tipo_processo": {
+          "id_tipo_processo": "72",
+          "nome": "Contrato: Celebração"
+        },
+        "especificacao": "Contrato de manutenção predial 2026",
+        "situacao": "A",
+        "nivel_acesso": "0",
+        "hipotese_legal": null,
+        "data_autuacao": "2026-02-14T11:05:00",
+        "data_ultima_atualizacao": "2026-05-18T08:10:05",
+        "unidade_autuadora": {
+          "id_unidade": "110000592",
+          "sigla": "DTIC",
+          "descricao": "Diretoria de Tecnologia da Informação e Comunicação"
+        },
+        "interessados": ["Construtora Y S.A."],
+        "observacao": "",
+        "link": "https://sei.exemplo.gov.br/sei/controlador.php?acao=arvore_visualizar&id_procedimento=100000002"
+      },
+      {
+        "id_processo": "100000003",
+        "protocolo_formatado": "00000.003554/2026-41",
+        "numero": "00000.003554/2026-41",
+        "tipo_processo": {
+          "id_tipo_processo": "33",
+          "nome": "Pessoal: Capacitação / Treinamento"
+        },
+        "especificacao": "Curso de gestão de projetos — turma maio/2026",
+        "situacao": "A",
+        "nivel_acesso": "0",
+        "hipotese_legal": null,
+        "data_autuacao": "2026-03-02T15:22:00",
+        "data_ultima_atualizacao": "2026-05-15T10:00:00",
+        "unidade_autuadora": {
+          "id_unidade": "110000592",
+          "sigla": "DTIC",
+          "descricao": "Diretoria de Tecnologia da Informação e Comunicação"
+        },
+        "interessados": ["RH Central"],
+        "observacao": "",
+        "link": "https://sei.exemplo.gov.br/sei/controlador.php?acao=arvore_visualizar&id_procedimento=100000003"
+      },
+      {
+        "id_processo": "100000004",
+        "protocolo_formatado": "00000.004102/2026-88",
+        "numero": "00000.004102/2026-88",
+        "tipo_processo": {
+          "id_tipo_processo": "51",
+          "nome": "Aquisição de Material Permanente"
+        },
+        "especificacao": "Aquisição de mobiliário para sala de reuniões",
+        "situacao": "A",
+        "nivel_acesso": "0",
+        "hipotese_legal": null,
+        "data_autuacao": "2026-03-18T10:45:00",
+        "data_ultima_atualizacao": "2026-05-10T09:12:00",
+        "unidade_autuadora": {
+          "id_unidade": "110000592",
+          "sigla": "DTIC",
+          "descricao": "Diretoria de Tecnologia da Informação e Comunicação"
+        },
+        "interessados": ["Almoxarifado Central"],
+        "observacao": "Aguardando DFD assinado",
+        "link": "https://sei.exemplo.gov.br/sei/controlador.php?acao=arvore_visualizar&id_procedimento=100000004"
+      },
+      {
+        "id_processo": "100000005",
+        "protocolo_formatado": "00000.005677/2026-23",
+        "numero": "00000.005677/2026-23",
+        "tipo_processo": {
+          "id_tipo_processo": "98",
+          "nome": "Licitação: Pregão Eletrônico"
+        },
+        "especificacao": "Pregão nº 003/2026 — licenças de software",
+        "situacao": "A",
+        "nivel_acesso": "0",
+        "hipotese_legal": null,
+        "data_autuacao": "2026-04-05T08:30:00",
+        "data_ultima_atualizacao": "2026-05-22T16:00:00",
+        "unidade_autuadora": {
+          "id_unidade": "110000592",
+          "sigla": "DTIC",
+          "descricao": "Diretoria de Tecnologia da Informação e Comunicação"
+        },
+        "interessados": ["Pregoeiro Oficial", "Empresa Z Corp."],
+        "observacao": "",
+        "link": "https://sei.exemplo.gov.br/sei/controlador.php?acao=arvore_visualizar&id_procedimento=100000005"
+      },
+      {
+        "id_processo": "100000006",
+        "protocolo_formatado": "00000.006340/2026-56",
+        "numero": "00000.006340/2026-56",
+        "tipo_processo": {
+          "id_tipo_processo": "14",
+          "nome": "Auditoria Interna"
+        },
+        "especificacao": "Auditoria de conformidade — 1º semestre 2026",
+        "situacao": "A",
+        "nivel_acesso": "1",
+        "hipotese_legal": "Art. 26, III da Lei 12.527/2011",
+        "data_autuacao": "2026-04-22T13:00:00",
+        "data_ultima_atualizacao": "2026-05-19T11:45:00",
+        "unidade_autuadora": {
+          "id_unidade": "110000592",
+          "sigla": "DTIC",
+          "descricao": "Diretoria de Tecnologia da Informação e Comunicação"
+        },
+        "interessados": ["AUDIN"],
+        "observacao": "Acesso restrito",
+        "link": "https://sei.exemplo.gov.br/sei/controlador.php?acao=arvore_visualizar&id_procedimento=100000006"
+      },
+      {
+        "id_processo": "100000007",
+        "protocolo_formatado": "00000.007019/2026-34",
+        "numero": "00000.007019/2026-34",
+        "tipo_processo": {
+          "id_tipo_processo": "72",
+          "nome": "Contrato: Celebração"
+        },
+        "especificacao": "Contrato de link de internet dedicado",
+        "situacao": "A",
+        "nivel_acesso": "0",
+        "hipotese_legal": null,
+        "data_autuacao": "2026-05-01T09:00:00",
+        "data_ultima_atualizacao": "2026-05-24T14:20:00",
+        "unidade_autuadora": {
+          "id_unidade": "110000592",
+          "sigla": "DTIC",
+          "descricao": "Diretoria de Tecnologia da Informação e Comunicação"
+        },
+        "interessados": ["Telecom Brasil Ltda."],
+        "observacao": "",
+        "link": "https://sei.exemplo.gov.br/sei/controlador.php?acao=arvore_visualizar&id_procedimento=100000007"
+      },
+      {
+        "id_processo": "100000008",
+        "protocolo_formatado": "00000.008800/2026-02",
+        "numero": "00000.008800/2026-02",
+        "tipo_processo": {
+          "id_tipo_processo": "33",
+          "nome": "Pessoal: Capacitação / Treinamento"
+        },
+        "especificacao": "Treinamento de segurança da informação",
+        "situacao": "A",
+        "nivel_acesso": "0",
+        "hipotese_legal": null,
+        "data_autuacao": "2026-05-12T10:10:00",
+        "data_ultima_atualizacao": "2026-05-25T09:00:00",
+        "unidade_autuadora": {
+          "id_unidade": "110000592",
+          "sigla": "DTIC",
+          "descricao": "Diretoria de Tecnologia da Informação e Comunicação"
+        },
+        "interessados": ["Todos os servidores DTIC"],
+        "observacao": "",
+        "link": "https://sei.exemplo.gov.br/sei/controlador.php?acao=arvore_visualizar&id_procedimento=100000008"
+      }
+    ]
+  },
+
+  "processos_concluidos": {
+    "total_registros": 312,
+    "pagina_atual": 1,
+    "total_paginas": 7,
+    "registros": []
+  },
+
+  "processos_retornados": {
+    "total_registros": 5,
+    "pagina_atual": 1,
+    "total_paginas": 1,
+    "registros": [
+      {
+        "id_processo": "100000009",
+        "protocolo_formatado": "00000.000881/2025-77",
+        "numero": "00000.000881/2025-77",
+        "tipo_processo": {
+          "id_tipo_processo": "98",
+          "nome": "Licitação: Pregão Eletrônico"
+        },
+        "especificacao": "Pregão nº 011/2025 — serviços de limpeza",
+        "situacao": "R",
+        "nivel_acesso": "0",
+        "hipotese_legal": null,
+        "data_autuacao": "2025-11-10T08:00:00",
+        "data_ultima_atualizacao": "2026-05-21T16:30:00",
+        "unidade_autuadora": {
+          "id_unidade": "110000592",
+          "sigla": "DTIC",
+          "descricao": "Diretoria de Tecnologia da Informação e Comunicação"
+        },
+        "interessados": ["Limpeza Total Ltda."],
+        "observacao": "Retornado para correção do TR"
+      }
+    ]
+  },
+
+  "documentos": {
+    "total_registros": 10,
+    "pagina_atual": 1,
+    "total_paginas": 1,
+    "registros": [
+      {
+        "id_documento": "200001",
+        "protocolo_formatado": "0948712",
+        "numero": "0948712",
+        "tipo_documento": {
+          "id_tipo_documento": "1",
+          "nome": "Ofício"
+        },
+        "descricao": "Ofício nº 142/2026 — Solicitação de dotação orçamentária",
+        "situacao": "A",
+        "data_geracao": "2026-05-25T10:30:00",
+        "id_processo": "100000005",
+        "protocolo_processo": "00000.005677/2026-23",
+        "assinado": true,
+        "assinantes": [
+          { "nome": "Maria da Silva", "cargo": "Diretora de TIC" }
+        ]
+      },
+      {
+        "id_documento": "200002",
+        "protocolo_formatado": "0948650",
+        "numero": "0948650",
+        "tipo_documento": {
+          "id_tipo_documento": "7",
+          "nome": "Despacho"
+        },
+        "descricao": "Despacho de aprovação — aquisição notebooks",
+        "situacao": "A",
+        "data_geracao": "2026-05-24T14:15:00",
+        "id_processo": "100000001",
+        "protocolo_processo": "00000.001234/2026-15",
+        "assinado": true,
+        "assinantes": [
+          { "nome": "João Pereira", "cargo": "Chefe de Seção" }
+        ]
+      },
+      {
+        "id_documento": "200003",
+        "protocolo_formatado": "0948601",
+        "numero": "0948601",
+        "tipo_documento": {
+          "id_tipo_documento": "15",
+          "nome": "Nota Técnica"
+        },
+        "descricao": "NT nº 018/2026 — Estudo técnico pregão licenças",
+        "situacao": "A",
+        "data_geracao": "2026-05-23T09:00:00",
+        "id_processo": "100000005",
+        "protocolo_processo": "00000.005677/2026-23",
+        "assinado": false,
+        "assinantes": []
+      },
+      {
+        "id_documento": "200004",
+        "protocolo_formatado": "0948544",
+        "numero": "0948544",
+        "tipo_documento": {
+          "id_tipo_documento": "22",
+          "nome": "Memorando"
+        },
+        "descricao": "Memorando nº 055/2026 — Informações para auditoria",
+        "situacao": "A",
+        "data_geracao": "2026-05-22T16:00:00",
+        "id_processo": "100000006",
+        "protocolo_processo": "00000.006340/2026-56",
+        "assinado": true,
+        "assinantes": [
+          { "nome": "Ana Souza", "cargo": "Analista de TI" }
+        ]
+      },
+      {
+        "id_documento": "200005",
+        "protocolo_formatado": "0948490",
+        "numero": "0948490",
+        "tipo_documento": {
+          "id_tipo_documento": "3",
+          "nome": "Contrato"
+        },
+        "descricao": "Contrato nº 007/2026 — manutenção predial",
+        "situacao": "A",
+        "data_geracao": "2026-05-20T11:00:00",
+        "id_processo": "100000002",
+        "protocolo_processo": "00000.002891/2026-07",
+        "assinado": true,
+        "assinantes": [
+          { "nome": "Carlos Lima", "cargo": "Ordenador de Despesas" },
+          { "nome": "Construtora Y S.A.", "cargo": "Representante Legal" }
+        ]
+      }
+    ]
+  },
+
+  "tipos_processo": [
+    { "id_tipo_processo": "14", "nome": "Auditoria Interna",                    "descricao": "Processos de auditoria e controle interno" },
+    { "id_tipo_processo": "33", "nome": "Pessoal: Capacitação / Treinamento",    "descricao": "Cursos, treinamentos e capacitações de servidores" },
+    { "id_tipo_processo": "51", "nome": "Aquisição de Material Permanente",      "descricao": "Compra de bens permanentes" },
+    { "id_tipo_processo": "52", "nome": "Aquisição de Material de Consumo",      "descricao": "Compra de materiais de consumo" },
+    { "id_tipo_processo": "60", "nome": "Comunicação: Atendimento ao Cidadão",   "descricao": "Demandas e solicitações do cidadão" },
+    { "id_tipo_processo": "72", "nome": "Contrato: Celebração",                  "descricao": "Celebração de contratos administrativos" },
+    { "id_tipo_processo": "73", "nome": "Contrato: Aditivo",                     "descricao": "Termos aditivos a contratos" },
+    { "id_tipo_processo": "98", "nome": "Licitação: Pregão Eletrônico",          "descricao": "Processos licitatórios via pregão eletrônico" },
+    { "id_tipo_processo": "99", "nome": "Licitação: Dispensa",                   "descricao": "Processos de dispensa de licitação" },
+    { "id_tipo_processo": "110","nome": "Pessoal: Afastamento",                  "descricao": "Licenças e afastamentos funcionais" }
+  ],
+
+  "unidades": [
+    { "id_unidade": "110000001", "sigla": "PRESI",   "descricao": "Presidência",                                 "id_orgao": "1", "sin_protocolo": "S", "sin_arquivamento": "N", "sin_ouvidoria": "N" },
+    { "id_unidade": "110000100", "sigla": "GABIN",   "descricao": "Gabinete",                                    "id_orgao": "1", "sin_protocolo": "S", "sin_arquivamento": "N", "sin_ouvidoria": "N" },
+    { "id_unidade": "110000200", "sigla": "PROGE",   "descricao": "Procuradoria Geral",                          "id_orgao": "1", "sin_protocolo": "S", "sin_arquivamento": "N", "sin_ouvidoria": "N" },
+    { "id_unidade": "110000300", "sigla": "DIRAD",   "descricao": "Diretoria Administrativa",                    "id_orgao": "1", "sin_protocolo": "S", "sin_arquivamento": "N", "sin_ouvidoria": "N" },
+    { "id_unidade": "110000400", "sigla": "COLIC",   "descricao": "Coordenação de Licitações e Contratos",       "id_orgao": "1", "sin_protocolo": "S", "sin_arquivamento": "N", "sin_ouvidoria": "N" },
+    { "id_unidade": "110000500", "sigla": "COPAG",   "descricao": "Coordenação de Pagamentos",                   "id_orgao": "1", "sin_protocolo": "S", "sin_arquivamento": "N", "sin_ouvidoria": "N" },
+    { "id_unidade": "110000592", "sigla": "DTIC",    "descricao": "Diretoria de Tecnologia da Informação",       "id_orgao": "1", "sin_protocolo": "S", "sin_arquivamento": "N", "sin_ouvidoria": "N" },
+    { "id_unidade": "110000600", "sigla": "COTIN",   "descricao": "Coordenação de Infraestrutura de TI",         "id_orgao": "1", "sin_protocolo": "S", "sin_arquivamento": "N", "sin_ouvidoria": "N" },
+    { "id_unidade": "110000700", "sigla": "COSEG",   "descricao": "Coordenação de Segurança da Informação",      "id_orgao": "1", "sin_protocolo": "S", "sin_arquivamento": "N", "sin_ouvidoria": "N" },
+    { "id_unidade": "110000800", "sigla": "AUDINT",  "descricao": "Auditoria Interna",                           "id_orgao": "1", "sin_protocolo": "S", "sin_arquivamento": "S", "sin_ouvidoria": "N" },
+    { "id_unidade": "110000900", "sigla": "OUVID",   "descricao": "Ouvidoria",                                   "id_orgao": "1", "sin_protocolo": "S", "sin_arquivamento": "N", "sin_ouvidoria": "S" },
+    { "id_unidade": "110001000", "sigla": "ARQCEN",  "descricao": "Arquivo Central",                             "id_orgao": "1", "sin_protocolo": "N", "sin_arquivamento": "S", "sin_ouvidoria": "N" }
+  ],
+
+  "usuario": {
+    "id_usuario": "100",
+    "login": "joao.pereira",
+    "nome": "João Pereira dos Santos",
+    "email": "joao.pereira@exemplo.gov.br",
+    "telefone": "(61) 3333-4444",
+    "id_orgao": "1",
+    "sigla_orgao": "MINGOV",
+    "descricao_orgao": "Ministério Exemplo",
+    "unidades": [
+      { "id_unidade": "110000592", "sigla": "DTIC", "descricao": "Diretoria de Tecnologia da Informação" }
+    ],
+    "perfis": [
+      { "id_perfil": "3", "nome": "Básico" },
+      { "id_perfil": "5", "nome": "Gestor de Processos" }
+    ]
+  },
+
+  "auth_token_exemplo": {
+    "comentario": "Resposta do endpoint POST /sei/v1/autenticar",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoiMTAwIiwibG9naW4iOiJqb2FvLnBlcmVpcmEiLCJpZF91bmlkYWRlIjoiMTEwMDAwNTkyIiwiaWF0IjoxNzE2ODk2MDAwLCJleHAiOjE3MTY4OTk2MDB9.ASSINATURA_FAKE",
+    "expiracao": "2026-05-28T15:00:00",
+    "tipo": "Bearer"
+  }
+}
