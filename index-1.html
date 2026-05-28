@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SEI · Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:      #080c10;
+  --s1:      #0e1419;
+  --s2:      #141c24;
+  --s3:      #1a2535;
+  --border:  #1f2f42;
+  --border2: #2d4460;
+  --text:    #d4e4f4;
+  --muted:   #6b8aaa;
+  --dim:     #364d66;
+  --green:   #1fd17a;
+  --blue:    #3d9bff;
+  --yellow:  #f0b429;
+  --red:     #ff5252;
+  --purple:  #a78bfa;
+  --mono:    'JetBrains Mono', monospace;
+  --display: 'Syne', sans-serif;
+  --r:       8px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 13px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(61,155,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(61,155,255,.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.shell { display: flex; min-height: 100vh; position: relative; z-index: 1; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 200px; background: var(--s1);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh;
+  flex-shrink: 0; z-index: 20;
+}
+.logo { padding: 22px 16px 18px; border-bottom: 1px solid var(--border); }
+.logo-badge { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.logo-icon {
+  width: 28px; height: 28px; background: var(--green); border-radius: 5px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: #000;
+}
+.logo-text { font-family: var(--display); font-size: 16px; font-weight: 800; letter-spacing: -.3px; }
+.logo-sub { font-size: 10px; color: var(--dim); letter-spacing: .5px; margin-top: 2px; }
+.nav { padding: 10px 8px; flex: 1; }
+.nav-section-label {
+  font-size: 9px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--dim); padding: 10px 8px 5px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 5px;
+  color: var(--muted); font-size: 12px; cursor: pointer;
+  transition: background .15s, color .15s; border: 1px solid transparent;
+}
+.nav-item:hover { background: var(--s2); color: var(--text); }
+.nav-item.active { background: var(--s3); color: var(--text); border-color: var(--border2); }
+.nav-pip { width: 5px; height: 5px; border-radius: 50%; background: var(--dim); flex-shrink: 0; transition: background .15s; }
+.nav-item.active .nav-pip { background: var(--green); box-shadow: 0 0 6px var(--green); }
+.sidebar-bottom { padding: 12px 14px; border-top: 1px solid var(--border); font-size: 10px; color: var(--dim); }
+.sidebar-bottom span { color: var(--muted); }
+
+/* ── MAIN ── */
+.main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+/* ── TOPBAR ── */
+.topbar {
+  position: sticky; top: 0; z-index: 10;
+  background: rgba(8,12,16,.9); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  height: 50px; display: flex; align-items: center;
+  padding: 0 24px; justify-content: space-between;
+}
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.topbar-title { font-family: var(--display); font-size: 14px; font-weight: 700; letter-spacing: -.2px; }
+.mock-pill {
+  background: rgba(167,139,250,.12); border: 1px solid rgba(167,139,250,.3);
+  color: var(--purple); font-size: 9px; font-weight: 600;
+  letter-spacing: 1px; text-transform: uppercase; padding: 3px 8px; border-radius: 20px;
+}
+.topbar-right { display: flex; align-items: center; gap: 14px; color: var(--muted); font-size: 11px; }
+.live-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green); box-shadow: 0 0 8px var(--green);
+  display: inline-block; margin-right: 4px;
+  animation: blink 2.5s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
+
+/* ── CONTENT ── */
+.content { padding: 22px 24px; flex: 1; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+.anim { animation: fadeUp .4s ease both; }
+.anim-1{animation-delay:.05s} .anim-2{animation-delay:.10s}
+.anim-3{animation-delay:.15s} .anim-4{animation-delay:.20s}
+
+.section-hd {
+  display: flex; align-items: center; gap: 10px;
+  margin: 26px 0 14px;
+  font-size: 9px; font-weight: 600; letter-spacing: 1.8px; text-transform: uppercase; color: var(--dim);
+}
+.section-hd::before { content:''; width: 20px; height: 1px; background: var(--green); }
+.section-hd::after  { content:''; flex: 1; height: 1px; background: var(--border); }
+.section-hd:first-child { margin-top: 0; }
+
+/* ── KPI ── */
+.kpi-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: 10px; }
+@media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px) {.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+.kpi {
+  background: var(--s1); border: 1px solid var(--border); border-radius: var(--r);
+  padding: 15px 16px; position: relative; overflow: hidden;
+  cursor: default; transition: border-color .2s, transform .2s;
+}
+.kpi:hover { border-color: var(--border2); transform: translateY(-2px); }
+.kpi::after {
+  content:''; position: absolute; bottom:0; left:0; right:0;
+  height: 2px; background: var(--c, var(--green)); opacity: .7;
+}
+.kpi-label { font-size: 9px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.kpi-val { font-family: var(--display); font-size: 28px; font-weight: 800; line-height: 1; color: var(--c, var(--green)); }
+.kpi-sub { font-size: 9px; color: var(--dim); margin-top: 5px; }
+
+/* ── FILTER BAR ── */
+.filter-bar {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 12px 14px;
+  display: flex; align-items: center; gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.filter-bar input,
+.filter-bar select {
+  background: var(--s2);
+  border: 1px solid var(--border2);
+  border-radius: 5px;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 6px 10px;
+  outline: none;
+  transition: border-color .15s, background .15s;
+  height: 30px;
+}
+.filter-bar input::placeholder { color: var(--dim); }
+.filter-bar input:focus,
+.filter-bar select:focus { border-color: var(--blue); background: var(--s3); }
+.filter-bar select option { background: var(--s2); color: var(--text); }
+#f-search { width: 220px; }
+#f-tipo   { width: 200px; }
+#f-de, #f-ate { width: 120px; color-scheme: dark; }
+
+.sit-group { display: flex; gap: 4px; }
+.sit-btn {
+  background: var(--s2); border: 1px solid var(--border2);
+  color: var(--muted); font-family: var(--mono); font-size: 10px;
+  font-weight: 600; letter-spacing: .5px; text-transform: uppercase;
+  padding: 5px 10px; border-radius: 5px; cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s;
+  height: 30px;
+}
+.sit-btn:hover { background: var(--s3); color: var(--text); }
+.sit-btn.active-A { background: rgba(31,209,122,.15); border-color: var(--green); color: var(--green); }
+.sit-btn.active-C { background: rgba(61,155,255,.15); border-color: var(--blue);  color: var(--blue);  }
+.sit-btn.active-R { background: rgba(240,180,41,.15); border-color: var(--yellow);color: var(--yellow);}
+
+.filter-count {
+  margin-left: auto;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 10px; color: var(--muted);
+}
+.filter-count strong { color: var(--text); }
+.btn-clear {
+  background: transparent; border: 1px solid var(--border2);
+  color: var(--muted); font-family: var(--mono); font-size: 10px;
+  padding: 4px 10px; border-radius: 5px; cursor: pointer;
+  transition: border-color .15s, color .15s;
+}
+.btn-clear:hover { border-color: var(--red); color: var(--red); }
+.btn-clear.hidden { visibility: hidden; }
+
+/* ── FILTER LABEL SEPARATOR ── */
+.fl { font-size: 9px; color: var(--dim); letter-spacing: .8px; text-transform: uppercase; white-space: nowrap; }
+
+/* ── TWO COL ── */
+.two-col { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 14px; }
+@media(max-width:900px){.two-col{grid-template-columns:1fr}}
+
+/* ── PANEL ── */
+.panel { background: var(--s1); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+.panel-hd {
+  padding: 11px 16px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--s2);
+}
+.panel-hd-title { font-family: var(--display); font-size: 12px; font-weight: 700; letter-spacing: -.1px; }
+.badge {
+  font-size: 9px; font-weight: 600;
+  background: var(--s3); border: 1px solid var(--border2);
+  color: var(--muted); padding: 2px 8px; border-radius: 20px;
+}
+
+/* ── TABLE ── */
+.tbl { width: 100%; border-collapse: collapse; }
+.tbl th {
+  font-size: 9px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--dim); text-align: left; padding: 8px 14px;
+  background: var(--s2); border-bottom: 1px solid var(--border);
+}
+.tbl td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tbody tr { transition: background .12s; cursor: default; }
+.tbl tbody tr:hover td { background: var(--s2); }
+.proc-num  { color: var(--blue); font-size: 11px; white-space: nowrap; }
+.proc-tipo { font-size: 11px; color: var(--text); max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+.proc-spec { font-size: 10px; color: var(--muted); max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; margin-top: 1px; }
+.proc-date { font-size: 10px; color: var(--dim); white-space: nowrap; }
+.tag { display: inline-flex; align-items: center; font-size: 9px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; padding: 3px 7px; border-radius: 3px; }
+.tag-g { background: rgba(31,209,122,.12); color: var(--green); }
+.tag-b { background: rgba(61,155,255,.12); color: var(--blue); }
+.tag-y { background: rgba(240,180,41,.12); color: var(--yellow); }
+.tag-r { background: rgba(255,82,82,.12);  color: var(--red); }
+
+/* highlight de busca */
+mark { background: rgba(61,155,255,.25); color: var(--blue); border-radius: 2px; padding: 0 1px; }
+
+/* ── BARS ── */
+.bars { padding: 14px 16px; display: flex; flex-direction: column; gap: 13px; }
+.bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
+.bar-name { font-size: 11px; color: var(--text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar-n { font-size: 10px; color: var(--muted); width: 22px; text-align: right; flex-shrink: 0; }
+.bar-track { height: 3px; background: var(--s3); border-radius: 2px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--green), var(--blue)); transition: width .7s cubic-bezier(.16,1,.3,1); }
+
+/* ── DOC LIST ── */
+.doc-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 16px; border-bottom: 1px solid var(--border);
+  transition: background .12s; cursor: default;
+}
+.doc-row:last-child { border-bottom: none; }
+.doc-row:hover { background: var(--s2); }
+.doc-icon {
+  width: 32px; height: 32px; border-radius: 5px;
+  background: var(--s3); border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; color: var(--muted);
+  flex-shrink: 0; letter-spacing: .3px;
+}
+.doc-info { flex: 1; min-width: 0; }
+.doc-name { font-size: 11px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.doc-meta { font-size: 10px; color: var(--dim); margin-top: 2px; }
+
+.empty { padding: 36px; text-align: center; color: var(--dim); font-size: 11px; }
+
+.footer {
+  margin-top: 30px; padding-top: 16px;
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between;
+  font-size: 10px; color: var(--dim);
+}
+
+@media(max-width:700px){ .sidebar{display:none} .content{padding:14px} #f-search{width:100%} }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-badge">
+        <div class="logo-icon">SEI</div>
+        <div class="logo-text">Dashboard</div>
+      </div>
+      <div class="logo-sub">mod-wssei REST v1</div>
+    </div>
+    <nav class="nav">
+      <div class="nav-section-label">Visão geral</div>
+      <div class="nav-item active"><span class="nav-pip"></span> Início</div>
+      <div class="nav-item"><span class="nav-pip"></span> Processos</div>
+      <div class="nav-item"><span class="nav-pip"></span> Documentos</div>
+      <div class="nav-section-label" style="margin-top:8px">Administração</div>
+      <div class="nav-item"><span class="nav-pip"></span> Unidades</div>
+      <div class="nav-item"><span class="nav-pip"></span> Usuários</div>
+      <div class="nav-item"><span class="nav-pip"></span> Configurações</div>
+    </nav>
+    <div class="sidebar-bottom">
+      unidade <span id="sb-unidade">—</span><br>
+      órgão <span id="sb-orgao">—</span>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <span class="topbar-title">Painel de Controle</span>
+        <span class="mock-pill">◈ mock</span>
+      </div>
+      <div class="topbar-right">
+        <span><span class="live-dot"></span>Online</span>
+        <span id="clock">—</span>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- KPIs -->
+      <div class="section-hd anim anim-1">Indicadores da unidade</div>
+      <div class="kpi-grid anim anim-1">
+        <div class="kpi" style="--c:var(--green)">
+          <div class="kpi-label">Em Aberto</div>
+          <div class="kpi-val" id="k-abertos">—</div>
+          <div class="kpi-sub">processos ativos</div>
+        </div>
+        <div class="kpi" style="--c:var(--muted)">
+          <div class="kpi-label">Concluídos</div>
+          <div class="kpi-val" id="k-concluidos">—</div>
+          <div class="kpi-sub">finalizados</div>
+        </div>
+        <div class="kpi" style="--c:var(--yellow)">
+          <div class="kpi-label">Retornados</div>
+          <div class="kpi-val" id="k-retornados">—</div>
+          <div class="kpi-sub">aguardando ação</div>
+        </div>
+        <div class="kpi" style="--c:var(--blue)">
+          <div class="kpi-label">Documentos</div>
+          <div class="kpi-val" id="k-docs">—</div>
+          <div class="kpi-sub">últimos recebidos</div>
+        </div>
+        <div class="kpi" style="--c:var(--blue)">
+          <div class="kpi-label">Tipos de Proc.</div>
+          <div class="kpi-val" id="k-tipos">—</div>
+          <div class="kpi-sub">catalogados</div>
+        </div>
+        <div class="kpi" style="--c:var(--green)">
+          <div class="kpi-label">Unidades</div>
+          <div class="kpi-val" id="k-unidades">—</div>
+          <div class="kpi-sub">no órgão</div>
+        </div>
+      </div>
+
+      <!-- PROCESSOS -->
+      <div class="section-hd anim anim-2">Processos em aberto</div>
+
+      <!-- FILTER BAR -->
+      <div class="filter-bar anim anim-2">
+        <input  id="f-search" type="search"  placeholder="Buscar número ou especificação…">
+        <span   class="fl">tipo</span>
+        <select id="f-tipo">
+          <option value="">Todos</option>
+        </select>
+        <span class="fl">situação</span>
+        <div class="sit-group" id="sit-group">
+          <button class="sit-btn active-A" data-sit="A">Aberto</button>
+          <button class="sit-btn" data-sit="C">Concl.</button>
+          <button class="sit-btn" data-sit="R">Ret.</button>
+        </div>
+        <span class="fl">período</span>
+        <input id="f-de"  type="date" title="De">
+        <input id="f-ate" type="date" title="Até">
+        <div class="filter-count">
+          <strong id="fc-n">—</strong> resultado(s)
+          <button class="btn-clear hidden" id="btn-clear">✕ limpar</button>
+        </div>
+      </div>
+
+      <div class="two-col anim anim-2">
+        <div class="panel">
+          <div class="panel-hd">
+            <span class="panel-hd-title">Recentes</span>
+            <span class="badge" id="badge-proc">0</span>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th>Número</th>
+                  <th>Tipo / Especificação</th>
+                  <th>Data</th>
+                  <th>Sit.</th>
+                </tr>
+              </thead>
+              <tbody id="proc-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-hd">
+            <span class="panel-hd-title">Distribuição por tipo</span>
+            <span class="badge" id="badge-tipos">0 tipos</span>
+          </div>
+          <div class="bars" id="bars"></div>
+        </div>
+      </div>
+
+      <!-- DOCUMENTOS -->
+      <div class="section-hd anim anim-3">Documentos recentes</div>
+      <div class="panel anim anim-3">
+        <div class="panel-hd">
+          <span class="panel-hd-title">Últimos recebidos / gerados</span>
+          <span class="badge" id="badge-docs">0</span>
+        </div>
+        <div id="doc-list"></div>
+      </div>
+
+      <div class="footer anim anim-4">
+        <span>SEI Dashboard · mock data · mod-wssei REST v1</span>
+        <span id="footer-ts">—</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── MOCK ─────────────────────────────────────────────────────────────────────
+const MOCK = {
+  processos_abertos: {
+    total_registros: 47,
+    registros: [
+      { protocolo_formatado:"00000.001234/2026-15", tipo_processo:{nome:"Aquisição de Material Permanente"}, especificacao:"Compra de notebooks para TI",               situacao:"A", data_autuacao:"2026-01-08" },
+      { protocolo_formatado:"00000.002891/2026-07", tipo_processo:{nome:"Contrato: Celebração"},              especificacao:"Contrato de manutenção predial 2026",       situacao:"A", data_autuacao:"2026-02-14" },
+      { protocolo_formatado:"00000.003554/2026-41", tipo_processo:{nome:"Pessoal: Capacitação / Treinamento"},especificacao:"Curso de gestão de projetos — maio/2026",   situacao:"A", data_autuacao:"2026-03-02" },
+      { protocolo_formatado:"00000.004102/2026-88", tipo_processo:{nome:"Aquisição de Material Permanente"}, especificacao:"Aquisição de mobiliário — sala de reuniões", situacao:"A", data_autuacao:"2026-03-18" },
+      { protocolo_formatado:"00000.005677/2026-23", tipo_processo:{nome:"Licitação: Pregão Eletrônico"},      especificacao:"Pregão nº 003/2026 — licenças de software",  situacao:"A", data_autuacao:"2026-04-05" },
+      { protocolo_formatado:"00000.006340/2026-56", tipo_processo:{nome:"Auditoria Interna"},                 especificacao:"Auditoria de conformidade — 1º semestre",    situacao:"A", data_autuacao:"2026-04-22" },
+      { protocolo_formatado:"00000.007019/2026-34", tipo_processo:{nome:"Contrato: Celebração"},              especificacao:"Contrato de link de internet dedicado",       situacao:"A", data_autuacao:"2026-05-01" },
+      { protocolo_formatado:"00000.008800/2026-02", tipo_processo:{nome:"Pessoal: Capacitação / Treinamento"},especificacao:"Treinamento de segurança da informação",      situacao:"A", data_autuacao:"2026-05-12" },
+    ]
+  },
+  processos_concluidos: { total_registros: 312 },
+  processos_retornados: { total_registros: 5 },
+  documentos: {
+    registros: [
+      { protocolo_formatado:"0948712", tipo_documento:{nome:"Ofício"},       descricao:"Ofício nº 142/2026 — Solicitação de dotação orçamentária", data_geracao:"2026-05-25", assinado:true  },
+      { protocolo_formatado:"0948650", tipo_documento:{nome:"Despacho"},     descricao:"Despacho de aprovação — aquisição notebooks",               data_geracao:"2026-05-24", assinado:true  },
+      { protocolo_formatado:"0948601", tipo_documento:{nome:"Nota Técnica"}, descricao:"NT nº 018/2026 — Estudo técnico pregão licenças",            data_geracao:"2026-05-23", assinado:false },
+      { protocolo_formatado:"0948544", tipo_documento:{nome:"Memorando"},    descricao:"Memorando nº 055/2026 — Informações para auditoria",         data_geracao:"2026-05-22", assinado:true  },
+      { protocolo_formatado:"0948490", tipo_documento:{nome:"Contrato"},     descricao:"Contrato nº 007/2026 — manutenção predial",                  data_geracao:"2026-05-20", assinado:true  },
+    ]
+  },
+  tipos_processo: new Array(10).fill(0),
+  unidades:       new Array(12).fill(0),
+  config: { unidade:"110000592", orgao:"0" }
+};
+
+// ─── ESTADO DOS FILTROS ───────────────────────────────────────────────────────
+const F = { search:'', tipo:'', situacao:'A', de:'', ate:'' };
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+const $  = id => document.getElementById(id);
+const esc = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function hl(text, term) {
+  if (!term) return esc(text);
+  const re = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi');
+  return esc(text).replace(re, '<mark>$1</mark>');
+}
+
+const sitTag = s => ({
+  A: '<span class="tag tag-g">Aberto</span>',
+  C: '<span class="tag tag-b">Concl.</span>',
+  R: '<span class="tag tag-y">Ret.</span>',
+}[s] ?? `<span class="tag tag-b">${esc(s)}</span>`);
+
+// ─── APLICAR FILTROS ──────────────────────────────────────────────────────────
+function filtered() {
+  return MOCK.processos_abertos.registros.filter(p => {
+    const num   = (p.protocolo_formatado ?? '').toLowerCase();
+    const spec  = (p.especificacao ?? '').toLowerCase();
+    const tipo  = p.tipo_processo?.nome ?? '';
+    const sit   = p.situacao ?? 'A';
+    const data  = (p.data_autuacao ?? '').slice(0, 10);
+    const term  = F.search.toLowerCase();
+
+    if (term   && !num.includes(term) && !spec.includes(term)) return false;
+    if (F.tipo && tipo !== F.tipo)                              return false;
+    if (F.situacao && sit !== F.situacao)                       return false;
+    if (F.de   && data < F.de)                                  return false;
+    if (F.ate  && data > F.ate)                                 return false;
+    return true;
+  });
+}
+
+function hasActiveFilters() {
+  return F.search || F.tipo || F.situacao !== 'A' || F.de || F.ate;
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+function render() {
+  // sidebar / KPIs estáticos
+  $('sb-unidade').textContent   = MOCK.config.unidade;
+  $('sb-orgao').textContent     = MOCK.config.orgao;
+  $('k-abertos').textContent    = MOCK.processos_abertos.total_registros;
+  $('k-concluidos').textContent = MOCK.processos_concluidos.total_registros;
+  $('k-retornados').textContent = MOCK.processos_retornados.total_registros;
+  $('k-docs').textContent       = MOCK.documentos.registros.length;
+  $('k-tipos').textContent      = MOCK.tipos_processo.length;
+  $('k-unidades').textContent   = MOCK.unidades.length;
+
+  // Preencher select de tipos (uma vez)
+  if ($('f-tipo').options.length === 1) {
+    const tipos = [...new Set(MOCK.processos_abertos.registros.map(p => p.tipo_processo?.nome ?? ''))].sort();
+    tipos.forEach(t => {
+      const o = document.createElement('option');
+      o.value = t; o.textContent = t;
+      $('f-tipo').appendChild(o);
+    });
+  }
+
+  renderProcessos();
+  renderDocs();
+}
+
+function renderProcessos() {
+  const procs = filtered();
+  const term  = F.search;
+
+  // contador e botão limpar
+  $('fc-n').textContent = procs.length;
+  $('btn-clear').classList.toggle('hidden', !hasActiveFilters());
+
+  $('badge-proc').textContent = procs.length;
+
+  if (!procs.length) {
+    $('proc-tbody').innerHTML = '<tr><td colspan="4" class="empty">Nenhum processo corresponde aos filtros.</td></tr>';
+  } else {
+    $('proc-tbody').innerHTML = procs.map(p => `
+      <tr>
+        <td><span class="proc-num">${hl(p.protocolo_formatado, term)}</span></td>
+        <td>
+          <span class="proc-tipo">${esc(p.tipo_processo?.nome)}</span>
+          <span class="proc-spec">${hl(p.especificacao, term)}</span>
+        </td>
+        <td><span class="proc-date">${esc(String(p.data_autuacao??'').slice(0,10))}</span></td>
+        <td>${sitTag(p.situacao)}</td>
+      </tr>`).join('');
+  }
+
+  // bar chart reativo
+  const counter = {};
+  procs.forEach(p => {
+    const t = p.tipo_processo?.nome ?? 'Sem tipo';
+    counter[t] = (counter[t] ?? 0) + 1;
+  });
+  const sorted = Object.entries(counter).sort((a,b) => b[1]-a[1]).slice(0,6);
+  const maxVal = sorted[0]?.[1] ?? 1;
+  $('badge-tipos').textContent = sorted.length + ' tipos';
+  $('bars').innerHTML = sorted.length
+    ? sorted.map(([nome, qtd]) => `
+        <div>
+          <div class="bar-row">
+            <span class="bar-name">${esc(nome)}</span>
+            <span class="bar-n">${qtd}</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${Math.round(qtd/maxVal*100)}%"></div>
+          </div>
+        </div>`).join('')
+    : '<div class="empty">Sem dados</div>';
+}
+
+function renderDocs() {
+  const docs = MOCK.documentos.registros;
+  $('badge-docs').textContent = docs.length;
+  $('doc-list').innerHTML = docs.map(d => {
+    const tipo = d.tipo_documento?.nome ?? 'DOC';
+    return `
+    <div class="doc-row">
+      <div class="doc-icon">${esc(tipo.substring(0,3).toUpperCase())}</div>
+      <div class="doc-info">
+        <div class="doc-name">${esc(d.descricao || tipo)}</div>
+        <div class="doc-meta">${esc(d.protocolo_formatado)} · ${esc(tipo)} · ${esc(String(d.data_geracao??'').slice(0,10))}</div>
+      </div>
+      ${d.assinado ? '<span class="tag tag-g">Assinado</span>' : '<span class="tag tag-y">Pendente</span>'}
+    </div>`;
+  }).join('');
+}
+
+// ─── EVENTOS DOS FILTROS ──────────────────────────────────────────────────────
+
+// Busca (debounce 200ms)
+let searchTimer;
+$('f-search').addEventListener('input', e => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => { F.search = e.target.value.trim(); renderProcessos(); }, 200);
+});
+
+// Tipo
+$('f-tipo').addEventListener('change', e => { F.tipo = e.target.value; renderProcessos(); });
+
+// Situação (toggle: clica no ativo para deselecionar)
+document.querySelectorAll('.sit-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const sit = btn.dataset.sit;
+    F.situacao = (F.situacao === sit) ? '' : sit;
+    document.querySelectorAll('.sit-btn').forEach(b => {
+      b.className = 'sit-btn' + (F.situacao === b.dataset.sit ? ` active-${b.dataset.sit}` : '');
+    });
+    renderProcessos();
+  });
+});
+
+// Datas
+$('f-de').addEventListener('change',  e => { F.de  = e.target.value; renderProcessos(); });
+$('f-ate').addEventListener('change', e => { F.ate = e.target.value; renderProcessos(); });
+
+// Limpar tudo
+$('btn-clear').addEventListener('click', () => {
+  F.search = ''; F.tipo = ''; F.situacao = 'A'; F.de = ''; F.ate = '';
+  $('f-search').value = '';
+  $('f-tipo').value   = '';
+  $('f-de').value     = '';
+  $('f-ate').value    = '';
+  document.querySelectorAll('.sit-btn').forEach(b => {
+    b.className = 'sit-btn' + (b.dataset.sit === 'A' ? ' active-A' : '');
+  });
+  renderProcessos();
+});
+
+// ─── CLOCK ────────────────────────────────────────────────────────────────────
+function tick() {
+  const now = new Date();
+  const s = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR');
+  $('clock').textContent     = s;
+  $('footer-ts').textContent = 'Gerado em ' + s;
+}
+tick(); setInterval(tick, 1000);
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
