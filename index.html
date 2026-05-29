@@ -9,314 +9,189 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
-  --bg:      #080c10;
-  --s1:      #0e1419;
-  --s2:      #141c24;
-  --s3:      #1a2535;
-  --border:  #1f2f42;
-  --border2: #2d4460;
-  --text:    #d4e4f4;
-  --muted:   #6b8aaa;
-  --dim:     #364d66;
-  --green:   #1fd17a;
-  --blue:    #3d9bff;
-  --yellow:  #f0b429;
-  --red:     #ff5252;
-  --purple:  #a78bfa;
-  --mono:    'JetBrains Mono', monospace;
-  --display: 'Syne', sans-serif;
-  --r:       8px;
+  --bg:#080c10; --s1:#0e1419; --s2:#141c24; --s3:#1a2535;
+  --border:#1f2f42; --border2:#2d4460;
+  --text:#d4e4f4; --muted:#6b8aaa; --dim:#364d66;
+  --green:#1fd17a; --blue:#3d9bff; --yellow:#f0b429; --red:#ff5252; --purple:#a78bfa;
+  --mono:'JetBrains Mono',monospace; --display:'Syne',sans-serif; --r:8px;
 }
-
-html { scroll-behavior: smooth; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--mono);
-  font-size: 13px;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
+html { scroll-behavior:smooth; }
+body { background:var(--bg); color:var(--text); font-family:var(--mono); font-size:13px; min-height:100vh; overflow-x:hidden; }
 body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background-image:
-    linear-gradient(rgba(61,155,255,.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(61,155,255,.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
-  z-index: 0;
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image: linear-gradient(rgba(61,155,255,.03) 1px,transparent 1px),
+                    linear-gradient(90deg,rgba(61,155,255,.03) 1px,transparent 1px);
+  background-size:40px 40px;
 }
+.shell { display:flex; min-height:100vh; position:relative; z-index:1; }
 
-.shell { display: flex; min-height: 100vh; position: relative; z-index: 1; }
+/* SIDEBAR */
+.sidebar { width:200px; background:var(--s1); border-right:1px solid var(--border); display:flex; flex-direction:column; position:sticky; top:0; height:100vh; flex-shrink:0; z-index:20; }
+.logo { padding:22px 16px 18px; border-bottom:1px solid var(--border); }
+.logo-badge { display:inline-flex; align-items:center; gap:8px; margin-bottom:6px; }
+.logo-icon { width:28px; height:28px; background:var(--green); border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#000; }
+.logo-text { font-family:var(--display); font-size:16px; font-weight:800; letter-spacing:-.3px; }
+.logo-sub { font-size:10px; color:var(--dim); letter-spacing:.5px; margin-top:2px; }
+.nav { padding:10px 8px; flex:1; }
+.nav-label { font-size:9px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--dim); padding:10px 8px 5px; }
+.nav-item { display:flex; align-items:center; gap:8px; padding:7px 8px; border-radius:5px; color:var(--muted); font-size:12px; cursor:pointer; transition:background .15s,color .15s; border:1px solid transparent; }
+.nav-item:hover { background:var(--s2); color:var(--text); }
+.nav-item.active { background:var(--s3); color:var(--text); border-color:var(--border2); }
+.nav-pip { width:5px; height:5px; border-radius:50%; background:var(--dim); flex-shrink:0; }
+.nav-item.active .nav-pip { background:var(--green); box-shadow:0 0 6px var(--green); }
+.sidebar-bottom { padding:12px 14px; border-top:1px solid var(--border); font-size:10px; color:var(--dim); }
+.sidebar-bottom span { color:var(--muted); }
 
-/* ── SIDEBAR ── */
-.sidebar {
-  width: 200px; background: var(--s1);
-  border-right: 1px solid var(--border);
-  display: flex; flex-direction: column;
-  position: sticky; top: 0; height: 100vh;
-  flex-shrink: 0; z-index: 20;
-}
-.logo { padding: 22px 16px 18px; border-bottom: 1px solid var(--border); }
-.logo-badge { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-.logo-icon {
-  width: 28px; height: 28px; background: var(--green); border-radius: 5px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 700; color: #000;
-}
-.logo-text { font-family: var(--display); font-size: 16px; font-weight: 800; letter-spacing: -.3px; }
-.logo-sub { font-size: 10px; color: var(--dim); letter-spacing: .5px; margin-top: 2px; }
-.nav { padding: 10px 8px; flex: 1; }
-.nav-section-label {
-  font-size: 9px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
-  color: var(--dim); padding: 10px 8px 5px;
-}
-.nav-item {
-  display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 5px;
-  color: var(--muted); font-size: 12px; cursor: pointer;
-  transition: background .15s, color .15s; border: 1px solid transparent;
-}
-.nav-item:hover { background: var(--s2); color: var(--text); }
-.nav-item.active { background: var(--s3); color: var(--text); border-color: var(--border2); }
-.nav-pip { width: 5px; height: 5px; border-radius: 50%; background: var(--dim); flex-shrink: 0; transition: background .15s; }
-.nav-item.active .nav-pip { background: var(--green); box-shadow: 0 0 6px var(--green); }
-.sidebar-bottom { padding: 12px 14px; border-top: 1px solid var(--border); font-size: 10px; color: var(--dim); }
-.sidebar-bottom span { color: var(--muted); }
+/* MAIN */
+.main { flex:1; display:flex; flex-direction:column; min-width:0; }
 
-/* ── MAIN ── */
-.main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-
-/* ── TOPBAR ── */
+/* TOPBAR */
 .topbar {
-  position: sticky; top: 0; z-index: 10;
-  background: rgba(8,12,16,.9); backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-  height: 50px; display: flex; align-items: center;
-  padding: 0 24px; justify-content: space-between;
+  position:sticky; top:0; z-index:10;
+  background:rgba(8,12,16,.9); backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  height:50px; display:flex; align-items:center;
+  padding:0 24px; justify-content:space-between;
 }
-.topbar-left { display: flex; align-items: center; gap: 16px; }
-.topbar-title { font-family: var(--display); font-size: 14px; font-weight: 700; letter-spacing: -.2px; }
-.mock-pill {
-  background: rgba(167,139,250,.12); border: 1px solid rgba(167,139,250,.3);
-  color: var(--purple); font-size: 9px; font-weight: 600;
-  letter-spacing: 1px; text-transform: uppercase; padding: 3px 8px; border-radius: 20px;
-}
-.topbar-right { display: flex; align-items: center; gap: 14px; color: var(--muted); font-size: 11px; }
-.live-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--green); box-shadow: 0 0 8px var(--green);
-  display: inline-block; margin-right: 4px;
-  animation: blink 2.5s ease-in-out infinite;
-}
+.topbar-left { display:flex; align-items:center; gap:14px; }
+.topbar-title { font-family:var(--display); font-size:14px; font-weight:700; letter-spacing:-.2px; }
+.api-pill { background:rgba(31,209,122,.1); border:1px solid rgba(31,209,122,.3); color:var(--green); font-size:9px; font-weight:600; letter-spacing:1px; text-transform:uppercase; padding:3px 8px; border-radius:20px; }
+.err-pill { background:rgba(255,82,82,.1); border:1px solid rgba(255,82,82,.3); color:var(--red); font-size:9px; font-weight:600; letter-spacing:1px; text-transform:uppercase; padding:3px 8px; border-radius:20px; cursor:pointer; }
+.topbar-right { display:flex; align-items:center; gap:14px; color:var(--muted); font-size:11px; }
+.live-dot { width:6px; height:6px; border-radius:50%; display:inline-block; margin-right:4px; animation:blink 2.5s ease-in-out infinite; }
+.live-dot.ok   { background:var(--green); box-shadow:0 0 8px var(--green); }
+.live-dot.err  { background:var(--red);   box-shadow:0 0 8px var(--red); animation:none; }
+.live-dot.spin { background:var(--blue);  box-shadow:0 0 8px var(--blue); }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
 
-/* ── CONTENT ── */
-.content { padding: 22px 24px; flex: 1; }
+/* ERROR BANNER */
+.err-banner { display:none; background:rgba(255,82,82,.07); border-bottom:1px solid rgba(255,82,82,.25); padding:10px 24px; font-size:11px; color:var(--red); }
+.err-banner.show { display:flex; align-items:flex-start; gap:10px; }
+.err-banner pre { font-family:var(--mono); font-size:10px; color:rgba(255,82,82,.7); white-space:pre-wrap; word-break:break-all; }
 
+/* SETUP BANNER */
+.setup-banner {
+  display:none; flex-direction:column; gap:14px;
+  background:rgba(61,155,255,.05); border:1px solid rgba(61,155,255,.2);
+  border-radius:var(--r); padding:20px 24px; margin:20px 24px;
+}
+.setup-banner.show { display:flex; }
+.setup-banner h3 { font-family:var(--display); font-size:14px; font-weight:700; color:var(--blue); }
+.setup-banner ol { padding-left:18px; color:var(--muted); font-size:12px; line-height:2; }
+.setup-banner code { background:var(--s2); border:1px solid var(--border2); padding:1px 6px; border-radius:3px; color:var(--text); font-size:11px; }
+
+/* CONTENT */
+.content { padding:22px 24px; flex:1; }
 @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
-.anim { animation: fadeUp .4s ease both; }
+.anim { animation:fadeUp .4s ease both; }
 .anim-1{animation-delay:.05s} .anim-2{animation-delay:.10s}
 .anim-3{animation-delay:.15s} .anim-4{animation-delay:.20s}
 
-.section-hd {
-  display: flex; align-items: center; gap: 10px;
-  margin: 26px 0 14px;
-  font-size: 9px; font-weight: 600; letter-spacing: 1.8px; text-transform: uppercase; color: var(--dim);
-}
-.section-hd::before { content:''; width: 20px; height: 1px; background: var(--green); }
-.section-hd::after  { content:''; flex: 1; height: 1px; background: var(--border); }
-.section-hd:first-child { margin-top: 0; }
+.section-hd { display:flex; align-items:center; gap:10px; margin:26px 0 14px; font-size:9px; font-weight:600; letter-spacing:1.8px; text-transform:uppercase; color:var(--dim); }
+.section-hd::before { content:''; width:20px; height:1px; background:var(--green); }
+.section-hd::after  { content:''; flex:1; height:1px; background:var(--border); }
+.section-hd:first-child { margin-top:0; }
 
-/* ── KPI ── */
-.kpi-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: 10px; }
+/* KPI */
+.kpi-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:10px; }
 @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:700px) {.kpi-grid{grid-template-columns:repeat(2,1fr)}}
-.kpi {
-  background: var(--s1); border: 1px solid var(--border); border-radius: var(--r);
-  padding: 15px 16px; position: relative; overflow: hidden;
-  cursor: default; transition: border-color .2s, transform .2s;
-}
-.kpi:hover { border-color: var(--border2); transform: translateY(-2px); }
-.kpi::after {
-  content:''; position: absolute; bottom:0; left:0; right:0;
-  height: 2px; background: var(--c, var(--green)); opacity: .7;
-}
-.kpi-label { font-size: 9px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
-.kpi-val { font-family: var(--display); font-size: 28px; font-weight: 800; line-height: 1; color: var(--c, var(--green)); }
-.kpi-sub { font-size: 9px; color: var(--dim); margin-top: 5px; }
+.kpi { background:var(--s1); border:1px solid var(--border); border-radius:var(--r); padding:15px 16px; position:relative; overflow:hidden; transition:border-color .2s,transform .2s; }
+.kpi:hover { border-color:var(--border2); transform:translateY(-2px); }
+.kpi::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:var(--c,var(--green)); opacity:.7; }
+.kpi-label { font-size:9px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+.kpi-val { font-family:var(--display); font-size:28px; font-weight:800; line-height:1; color:var(--c,var(--green)); }
+.kpi-sub { font-size:9px; color:var(--dim); margin-top:5px; }
 
-/* ── FILTER BAR ── */
-.filter-bar {
-  background: var(--s1);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 12px 14px;
-  display: flex; align-items: center; gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 14px;
-}
-.filter-bar input,
-.filter-bar select {
-  background: var(--s2);
-  border: 1px solid var(--border2);
-  border-radius: 5px;
-  color: var(--text);
-  font-family: var(--mono);
-  font-size: 11px;
-  padding: 6px 10px;
-  outline: none;
-  transition: border-color .15s, background .15s;
-  height: 30px;
-}
-.filter-bar input::placeholder { color: var(--dim); }
-.filter-bar input:focus,
-.filter-bar select:focus { border-color: var(--blue); background: var(--s3); }
-.filter-bar select option { background: var(--s2); color: var(--text); }
-#f-search { width: 220px; }
-#f-tipo   { width: 200px; }
-#f-de, #f-ate { width: 120px; color-scheme: dark; }
+/* SKELETON */
+.skel { background:linear-gradient(90deg,var(--s2) 25%,var(--s3) 50%,var(--s2) 75%); background-size:200% 100%; animation:shimmer 1.4s infinite; border-radius:4px; }
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+.skel-kpi-val { height:28px; width:60px; margin-bottom:5px; }
+.skel-row { height:38px; margin:1px 0; }
+.skel-bar { height:4px; border-radius:2px; margin-top:4px; }
 
-.sit-group { display: flex; gap: 4px; }
-.sit-btn {
-  background: var(--s2); border: 1px solid var(--border2);
-  color: var(--muted); font-family: var(--mono); font-size: 10px;
-  font-weight: 600; letter-spacing: .5px; text-transform: uppercase;
-  padding: 5px 10px; border-radius: 5px; cursor: pointer;
-  transition: background .15s, color .15s, border-color .15s;
-  height: 30px;
-}
-.sit-btn:hover { background: var(--s3); color: var(--text); }
-.sit-btn.active-A { background: rgba(31,209,122,.15); border-color: var(--green); color: var(--green); }
-.sit-btn.active-C { background: rgba(61,155,255,.15); border-color: var(--blue);  color: var(--blue);  }
-.sit-btn.active-R { background: rgba(240,180,41,.15); border-color: var(--yellow);color: var(--yellow);}
+/* FILTERS */
+.filter-bar { background:var(--s1); border:1px solid var(--border); border-radius:var(--r); padding:12px 14px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+.filter-bar input, .filter-bar select { background:var(--s2); border:1px solid var(--border2); border-radius:5px; color:var(--text); font-family:var(--mono); font-size:11px; padding:6px 10px; outline:none; transition:border-color .15s,background .15s; height:30px; }
+.filter-bar input::placeholder { color:var(--dim); }
+.filter-bar input:focus, .filter-bar select:focus { border-color:var(--blue); background:var(--s3); }
+.filter-bar select option { background:var(--s2); color:var(--text); }
+#f-search{width:220px} #f-tipo{width:200px} #f-de,#f-ate{width:120px;color-scheme:dark}
+.sit-group { display:flex; gap:4px; }
+.sit-btn { background:var(--s2); border:1px solid var(--border2); color:var(--muted); font-family:var(--mono); font-size:10px; font-weight:600; letter-spacing:.5px; text-transform:uppercase; padding:5px 10px; border-radius:5px; cursor:pointer; transition:background .15s,color .15s,border-color .15s; height:30px; }
+.sit-btn:hover { background:var(--s3); color:var(--text); }
+.sit-btn.active-A { background:rgba(31,209,122,.15); border-color:var(--green); color:var(--green); }
+.sit-btn.active-C { background:rgba(61,155,255,.15); border-color:var(--blue);  color:var(--blue); }
+.sit-btn.active-R { background:rgba(240,180,41,.15); border-color:var(--yellow);color:var(--yellow); }
+.fl { font-size:9px; color:var(--dim); letter-spacing:.8px; text-transform:uppercase; white-space:nowrap; }
+.filter-count { margin-left:auto; display:flex; align-items:center; gap:8px; font-size:10px; color:var(--muted); }
+.filter-count strong { color:var(--text); }
+.btn-clear { background:transparent; border:1px solid var(--border2); color:var(--muted); font-family:var(--mono); font-size:10px; padding:4px 10px; border-radius:5px; cursor:pointer; transition:border-color .15s,color .15s; }
+.btn-clear:hover { border-color:var(--red); color:var(--red); }
+.btn-clear.hidden { visibility:hidden; }
+mark { background:rgba(61,155,255,.25); color:var(--blue); border-radius:2px; padding:0 1px; }
 
-.filter-count {
-  margin-left: auto;
-  display: flex; align-items: center; gap: 8px;
-  font-size: 10px; color: var(--muted);
-}
-.filter-count strong { color: var(--text); }
-.btn-clear {
-  background: transparent; border: 1px solid var(--border2);
-  color: var(--muted); font-family: var(--mono); font-size: 10px;
-  padding: 4px 10px; border-radius: 5px; cursor: pointer;
-  transition: border-color .15s, color .15s;
-}
-.btn-clear:hover { border-color: var(--red); color: var(--red); }
-.btn-clear.hidden { visibility: hidden; }
-
-/* ── FILTER LABEL SEPARATOR ── */
-.fl { font-size: 9px; color: var(--dim); letter-spacing: .8px; text-transform: uppercase; white-space: nowrap; }
-
-/* ── TWO COL ── */
-.two-col { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 14px; }
+/* TWO COL */
+.two-col { display:grid; grid-template-columns:1.1fr 0.9fr; gap:14px; }
 @media(max-width:900px){.two-col{grid-template-columns:1fr}}
 
-/* ── PANEL ── */
-.panel { background: var(--s1); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
-.panel-hd {
-  padding: 11px 16px; border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
-  background: var(--s2);
-}
-.panel-hd-title { font-family: var(--display); font-size: 12px; font-weight: 700; letter-spacing: -.1px; }
-.badge {
-  font-size: 9px; font-weight: 600;
-  background: var(--s3); border: 1px solid var(--border2);
-  color: var(--muted); padding: 2px 8px; border-radius: 20px;
-}
+/* PANEL */
+.panel { background:var(--s1); border:1px solid var(--border); border-radius:var(--r); overflow:hidden; }
+.panel-hd { padding:11px 16px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; background:var(--s2); }
+.panel-hd-title { font-family:var(--display); font-size:12px; font-weight:700; letter-spacing:-.1px; }
+.badge { font-size:9px; font-weight:600; background:var(--s3); border:1px solid var(--border2); color:var(--muted); padding:2px 8px; border-radius:20px; }
 
-/* ── TABLE ── */
-.tbl { width: 100%; border-collapse: collapse; }
-.tbl th {
-  font-size: 9px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
-  color: var(--dim); text-align: left; padding: 8px 14px;
-  background: var(--s2); border-bottom: 1px solid var(--border);
-}
-.tbl td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-.tbl tr:last-child td { border-bottom: none; }
-.tbl tbody tr { transition: background .12s; cursor: default; }
-.tbl tbody tr:hover td { background: var(--s2); }
-.proc-num  { color: var(--blue); font-size: 11px; white-space: nowrap; }
-.proc-tipo { font-size: 11px; color: var(--text); max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
-.proc-spec { font-size: 10px; color: var(--muted); max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; margin-top: 1px; }
-.proc-date { font-size: 10px; color: var(--dim); white-space: nowrap; }
-.tag { display: inline-flex; align-items: center; font-size: 9px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; padding: 3px 7px; border-radius: 3px; }
-.tag-g { background: rgba(31,209,122,.12); color: var(--green); }
-.tag-b { background: rgba(61,155,255,.12); color: var(--blue); }
-.tag-y { background: rgba(240,180,41,.12); color: var(--yellow); }
-.tag-r { background: rgba(255,82,82,.12);  color: var(--red); }
+/* TABLE */
+.tbl { width:100%; border-collapse:collapse; }
+.tbl th { font-size:9px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:var(--dim); text-align:left; padding:8px 14px; background:var(--s2); border-bottom:1px solid var(--border); }
+.tbl td { padding:9px 14px; border-bottom:1px solid var(--border); vertical-align:middle; }
+.tbl tr:last-child td { border-bottom:none; }
+.tbl tbody tr { transition:background .12s; cursor:default; }
+.tbl tbody tr:hover td { background:var(--s2); }
+.proc-num  { color:var(--blue); font-size:11px; white-space:nowrap; }
+.proc-tipo { font-size:11px; color:var(--text); max-width:180px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; }
+.proc-spec { font-size:10px; color:var(--muted); max-width:180px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; margin-top:1px; }
+.proc-date { font-size:10px; color:var(--dim); white-space:nowrap; }
+.tag { display:inline-flex; align-items:center; font-size:9px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 7px; border-radius:3px; }
+.tag-g { background:rgba(31,209,122,.12); color:var(--green); }
+.tag-b { background:rgba(61,155,255,.12); color:var(--blue); }
+.tag-y { background:rgba(240,180,41,.12); color:var(--yellow); }
+.tag-r { background:rgba(255,82,82,.12);  color:var(--red); }
 
-/* highlight de busca */
-mark { background: rgba(61,155,255,.25); color: var(--blue); border-radius: 2px; padding: 0 1px; }
+/* BARS */
+.bars { padding:14px 16px; display:flex; flex-direction:column; gap:13px; }
+.bar-row { display:flex; align-items:center; gap:10px; margin-bottom:5px; }
+.bar-name { font-size:11px; color:var(--text); flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.bar-n { font-size:10px; color:var(--muted); width:22px; text-align:right; flex-shrink:0; }
+.bar-track { height:3px; background:var(--s3); border-radius:2px; overflow:hidden; }
+.bar-fill { height:100%; border-radius:2px; background:linear-gradient(90deg,var(--green),var(--blue)); transition:width .7s cubic-bezier(.16,1,.3,1); }
 
-/* ── BARS ── */
-.bars { padding: 14px 16px; display: flex; flex-direction: column; gap: 13px; }
-.bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
-.bar-name { font-size: 11px; color: var(--text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.bar-n { font-size: 10px; color: var(--muted); width: 22px; text-align: right; flex-shrink: 0; }
-.bar-track { height: 3px; background: var(--s3); border-radius: 2px; overflow: hidden; }
-.bar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--green), var(--blue)); transition: width .7s cubic-bezier(.16,1,.3,1); }
+/* DOCS */
+.doc-row { display:flex; align-items:center; gap:12px; padding:10px 16px; border-bottom:1px solid var(--border); transition:background .12s; cursor:default; }
+.doc-row:last-child { border-bottom:none; }
+.doc-row:hover { background:var(--s2); }
+.doc-icon { width:32px; height:32px; border-radius:5px; background:var(--s3); border:1px solid var(--border2); display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; color:var(--muted); flex-shrink:0; letter-spacing:.3px; }
+.doc-info { flex:1; min-width:0; }
+.doc-name { font-size:11px; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.doc-meta { font-size:10px; color:var(--dim); margin-top:2px; }
 
-/* ── DOC LIST ── */
-.doc-row {
-  display: flex; align-items: center; gap: 12px;
-  padding: 10px 16px; border-bottom: 1px solid var(--border);
-  transition: background .12s; cursor: default;
-}
-.doc-row:last-child { border-bottom: none; }
-.doc-row:hover { background: var(--s2); }
-.doc-icon {
-  width: 32px; height: 32px; border-radius: 5px;
-  background: var(--s3); border: 1px solid var(--border2);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 9px; font-weight: 700; color: var(--muted);
-  flex-shrink: 0; letter-spacing: .3px;
-}
-.doc-info { flex: 1; min-width: 0; }
-.doc-name { font-size: 11px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.doc-meta { font-size: 10px; color: var(--dim); margin-top: 2px; }
+/* CHART */
+.chart-wrap { position:relative; padding:16px 18px 12px; height:240px; }
+.chart-legend { display:flex; align-items:center; gap:20px; padding:12px 18px 14px; border-top:1px solid var(--border); }
+.legend-item { display:flex; align-items:center; gap:6px; font-size:10px; color:var(--muted); }
+.legend-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.chart-toggle { display:flex; gap:4px; }
+.ctgl { background:var(--s2); border:1px solid var(--border2); color:var(--muted); font-family:var(--mono); font-size:9px; font-weight:600; letter-spacing:.5px; text-transform:uppercase; padding:4px 10px; border-radius:5px; cursor:pointer; height:26px; transition:background .15s,color .15s,border-color .15s; }
+.ctgl:hover { background:var(--s3); color:var(--text); }
+.ctgl.on { background:rgba(61,155,255,.15); border-color:var(--blue); color:var(--blue); }
 
-.empty { padding: 36px; text-align: center; color: var(--dim); font-size: 11px; }
+/* RETRY BTN */
+.btn-retry { background:rgba(61,155,255,.1); border:1px solid rgba(61,155,255,.3); color:var(--blue); font-family:var(--mono); font-size:10px; font-weight:600; padding:5px 12px; border-radius:5px; cursor:pointer; transition:background .15s; margin-left:auto; }
+.btn-retry:hover { background:rgba(61,155,255,.2); }
 
-.footer {
-  margin-top: 30px; padding-top: 16px;
-  border-top: 1px solid var(--border);
-  display: flex; justify-content: space-between;
-  font-size: 10px; color: var(--dim);
-}
-
-/* ── CHART PANEL ── */
-.chart-wrap {
-  position: relative;
-  padding: 16px 18px 12px;
-  height: 240px;
-}
-.chart-legend {
-  display: flex; align-items: center; gap: 20px;
-  padding: 0 18px 14px;
-  border-top: 1px solid var(--border);
-  padding-top: 12px;
-}
-.legend-item { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--muted); }
-.legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-
-/* ── CHART TOGGLE ── */
-.chart-toggle { display: flex; gap: 4px; }
-.ctgl {
-  background: var(--s2); border: 1px solid var(--border2);
-  color: var(--muted); font-family: var(--mono); font-size: 9px;
-  font-weight: 600; letter-spacing: .5px; text-transform: uppercase;
-  padding: 4px 10px; border-radius: 5px; cursor: pointer;
-  transition: background .15s, color .15s, border-color .15s;
-  height: 26px;
-}
-.ctgl:hover { background: var(--s3); color: var(--text); }
-.ctgl.on { background: rgba(61,155,255,.15); border-color: var(--blue); color: var(--blue); }
-
+.empty { padding:36px; text-align:center; color:var(--dim); font-size:11px; }
+.footer { margin-top:30px; padding-top:16px; border-top:1px solid var(--border); display:flex; justify-content:space-between; font-size:10px; color:var(--dim); }
 @media(max-width:700px){ .sidebar{display:none} .content{padding:14px} #f-search{width:100%} }
 </style>
 </head>
@@ -330,86 +205,106 @@ mark { background: rgba(61,155,255,.25); color: var(--blue); border-radius: 2px;
         <div class="logo-icon">SEI</div>
         <div class="logo-text">Dashboard</div>
       </div>
-      <div class="logo-sub">mod-wssei REST v1</div>
+      <div class="logo-sub">mod-wssei REST v2</div>
     </div>
     <nav class="nav">
-      <div class="nav-section-label">Visão geral</div>
+      <div class="nav-label">Visão geral</div>
       <div class="nav-item active"><span class="nav-pip"></span> Início</div>
       <div class="nav-item"><span class="nav-pip"></span> Processos</div>
       <div class="nav-item"><span class="nav-pip"></span> Documentos</div>
-      <div class="nav-section-label" style="margin-top:8px">Administração</div>
+      <div class="nav-label" style="margin-top:8px">Administração</div>
       <div class="nav-item"><span class="nav-pip"></span> Unidades</div>
       <div class="nav-item"><span class="nav-pip"></span> Usuários</div>
       <div class="nav-item"><span class="nav-pip"></span> Configurações</div>
     </nav>
     <div class="sidebar-bottom">
       unidade <span id="sb-unidade">—</span><br>
-      órgão <span id="sb-orgao">—</span>
+      API <span id="sb-status" style="color:var(--dim)">aguardando</span>
     </div>
   </aside>
 
   <!-- MAIN -->
   <div class="main">
+
     <header class="topbar">
       <div class="topbar-left">
         <span class="topbar-title">Painel de Controle</span>
-        <span class="mock-pill">◈ mock</span>
+        <span id="status-pill" class="api-pill" style="display:none">● live</span>
       </div>
       <div class="topbar-right">
-        <span><span class="live-dot"></span>Online</span>
+        <span><span class="live-dot spin" id="live-dot"></span><span id="live-label">Conectando…</span></span>
         <span id="clock">—</span>
+        <button class="btn-retry" id="btn-retry" onclick="loadAll()" style="display:none">↺ Recarregar</button>
       </div>
     </header>
 
-    <div class="content">
+    <!-- Error banner -->
+    <div class="err-banner" id="err-banner">
+      <div style="flex:1">
+        <strong>Erro na API</strong> — <span id="err-msg"></span>
+        <pre id="err-detail" style="margin-top:6px;display:none"></pre>
+      </div>
+    </div>
+
+    <!-- Setup instructions (shown when not configured) -->
+    <div class="setup-banner" id="setup-banner">
+      <h3>⚙ Configuração necessária</h3>
+      <p style="font-size:12px;color:var(--muted)">Configure as variáveis de ambiente no Vercel para conectar à API do SEI:</p>
+      <ol>
+        <li>Acesse <strong>Vercel Dashboard</strong> → seu projeto → <strong>Settings → Environment Variables</strong></li>
+        <li>Adicione: <code>SEI_BASE_URL</code>, <code>SEI_USUARIO</code>, <code>SEI_SENHA</code>, <code>SEI_ORGAO</code></li>
+        <li>A URL base está no QR Code da barra lateral do SEI (menu esquerdo, rodapé)</li>
+        <li>Faça <strong>Redeploy</strong> após salvar as variáveis</li>
+      </ol>
+      <p style="font-size:11px;color:var(--dim)">Veja <code>.env.example</code> no repositório para referência.</p>
+    </div>
+
+    <div class="content" id="main-content">
 
       <!-- KPIs -->
       <div class="section-hd anim anim-1">Indicadores da unidade</div>
       <div class="kpi-grid anim anim-1">
         <div class="kpi" style="--c:var(--green)">
           <div class="kpi-label">Em Aberto</div>
-          <div class="kpi-val" id="k-abertos">—</div>
+          <div class="kpi-val" id="k-abertos"><div class="skel skel-kpi-val"></div></div>
           <div class="kpi-sub">processos ativos</div>
         </div>
         <div class="kpi" style="--c:var(--muted)">
           <div class="kpi-label">Concluídos</div>
-          <div class="kpi-val" id="k-concluidos">—</div>
+          <div class="kpi-val" id="k-concluidos"><div class="skel skel-kpi-val"></div></div>
           <div class="kpi-sub">finalizados</div>
         </div>
         <div class="kpi" style="--c:var(--yellow)">
           <div class="kpi-label">Retornados</div>
-          <div class="kpi-val" id="k-retornados">—</div>
+          <div class="kpi-val" id="k-retornados"><div class="skel skel-kpi-val"></div></div>
           <div class="kpi-sub">aguardando ação</div>
         </div>
         <div class="kpi" style="--c:var(--blue)">
           <div class="kpi-label">Documentos</div>
-          <div class="kpi-val" id="k-docs">—</div>
+          <div class="kpi-val" id="k-docs"><div class="skel skel-kpi-val"></div></div>
           <div class="kpi-sub">últimos recebidos</div>
         </div>
         <div class="kpi" style="--c:var(--blue)">
           <div class="kpi-label">Tipos de Proc.</div>
-          <div class="kpi-val" id="k-tipos">—</div>
+          <div class="kpi-val" id="k-tipos"><div class="skel skel-kpi-val"></div></div>
           <div class="kpi-sub">catalogados</div>
         </div>
         <div class="kpi" style="--c:var(--green)">
           <div class="kpi-label">Unidades</div>
-          <div class="kpi-val" id="k-unidades">—</div>
+          <div class="kpi-val" id="k-unidades"><div class="skel skel-kpi-val"></div></div>
           <div class="kpi-sub">no órgão</div>
         </div>
       </div>
 
-      <!-- PROCESSOS -->
+      <!-- Processos -->
       <div class="section-hd anim anim-2">Processos em aberto</div>
 
-      <!-- FILTER BAR -->
       <div class="filter-bar anim anim-2">
-        <input  id="f-search" type="search"  placeholder="Buscar número ou especificação…">
-        <span   class="fl">tipo</span>
-        <select id="f-tipo">
-          <option value="">Todos</option>
-        </select>
+        <input  id="f-search" type="search" placeholder="Buscar número ou especificação…">
+        <span class="fl">tipo</span>
+        <select id="f-tipo"><option value="">Todos</option></select>
         <span class="fl">situação</span>
-        <div class="sit-group" id="sit-group">
+        <div class="sit-group">
           <button class="sit-btn active-A" data-sit="A">Aberto</button>
           <button class="sit-btn" data-sit="C">Concl.</button>
           <button class="sit-btn" data-sit="R">Ret.</button>
@@ -417,8 +312,7 @@ mark { background: rgba(61,155,255,.25); color: var(--blue); border-radius: 2px;
         <span class="fl">período</span>
         <input id="f-de"  type="date" title="De">
         <input id="f-ate" type="date" title="Até">
-        <div class="filter-count">
-          <strong id="fc-n">—</strong> resultado(s)
+        <div class="filter-count"><strong id="fc-n">—</strong> resultado(s)
           <button class="btn-clear hidden" id="btn-clear">✕ limpar</button>
         </div>
       </div>
@@ -427,56 +321,57 @@ mark { background: rgba(61,155,255,.25); color: var(--blue); border-radius: 2px;
         <div class="panel">
           <div class="panel-hd">
             <span class="panel-hd-title">Recentes</span>
-            <span class="badge" id="badge-proc">0</span>
+            <span class="badge" id="badge-proc">—</span>
           </div>
           <div style="overflow-x:auto">
             <table class="tbl">
-              <thead>
-                <tr>
-                  <th>Número</th>
-                  <th>Tipo / Especificação</th>
-                  <th>Data</th>
-                  <th>Sit.</th>
-                </tr>
-              </thead>
-              <tbody id="proc-tbody"></tbody>
+              <thead><tr><th>Número</th><th>Tipo / Especificação</th><th>Data</th><th>Sit.</th></tr></thead>
+              <tbody id="proc-tbody">
+                <tr><td colspan="4"><div class="skel skel-row"></div></td></tr>
+                <tr><td colspan="4"><div class="skel skel-row"></div></td></tr>
+                <tr><td colspan="4"><div class="skel skel-row"></div></td></tr>
+              </tbody>
             </table>
           </div>
         </div>
-
         <div class="panel">
           <div class="panel-hd">
             <span class="panel-hd-title">Distribuição por tipo</span>
-            <span class="badge" id="badge-tipos">0 tipos</span>
+            <span class="badge" id="badge-tipos">—</span>
           </div>
-          <div class="bars" id="bars"></div>
+          <div class="bars" id="bars">
+            <div><div class="skel skel-bar" style="width:100%"></div></div>
+            <div><div class="skel skel-bar" style="width:75%"></div></div>
+            <div><div class="skel skel-bar" style="width:55%"></div></div>
+            <div><div class="skel skel-bar" style="width:40%"></div></div>
+          </div>
         </div>
       </div>
 
-      <!-- DOCUMENTOS -->
+      <!-- Documentos -->
       <div class="section-hd anim anim-3">Documentos recentes</div>
       <div class="panel anim anim-3">
         <div class="panel-hd">
           <span class="panel-hd-title">Últimos recebidos / gerados</span>
-          <span class="badge" id="badge-docs">0</span>
+          <span class="badge" id="badge-docs">—</span>
         </div>
-        <div id="doc-list"></div>
+        <div id="doc-list">
+          <div class="empty"><div class="skel" style="width:120px;height:12px;margin:0 auto"></div></div>
+        </div>
       </div>
 
-      <!-- EVOLUÇÃO TEMPORAL -->
+      <!-- Evolução temporal -->
       <div class="section-hd anim anim-4">Evolução temporal</div>
       <div class="panel anim anim-4">
         <div class="panel-hd">
-          <span class="panel-hd-title">Processos por mês — 2025/2026</span>
+          <span class="panel-hd-title">Processos por mês</span>
           <div class="chart-toggle">
             <button class="ctgl on" data-ds="abertos">Abertos</button>
             <button class="ctgl on" data-ds="concluidos">Concluídos</button>
             <button class="ctgl on" data-ds="retornados">Retornados</button>
           </div>
         </div>
-        <div class="chart-wrap">
-          <canvas id="evo-chart"></canvas>
-        </div>
+        <div class="chart-wrap"><canvas id="evo-chart"></canvas></div>
         <div class="chart-legend">
           <div class="legend-item"><span class="legend-dot" style="background:#1fd17a"></span>Abertos</div>
           <div class="legend-item"><span class="legend-dot" style="background:#3d9bff"></span>Concluídos</div>
@@ -485,335 +380,335 @@ mark { background: rgba(61,155,255,.25); color: var(--blue); border-radius: 2px;
       </div>
 
       <div class="footer anim anim-4">
-        <span>SEI Dashboard · mock data · mod-wssei REST v1</span>
+        <span>SEI Dashboard · mod-wssei REST v2</span>
         <span id="footer-ts">—</span>
       </div>
-    </div>
-  </div>
-</div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /shell -->
 
 <script>
-// ─── MOCK ─────────────────────────────────────────────────────────────────────
-const MOCK = {
-  processos_abertos: {
-    total_registros: 47,
-    registros: [
-      { protocolo_formatado:"00000.001234/2026-15", tipo_processo:{nome:"Aquisição de Material Permanente"}, especificacao:"Compra de notebooks para TI",               situacao:"A", data_autuacao:"2026-01-08" },
-      { protocolo_formatado:"00000.002891/2026-07", tipo_processo:{nome:"Contrato: Celebração"},              especificacao:"Contrato de manutenção predial 2026",       situacao:"A", data_autuacao:"2026-02-14" },
-      { protocolo_formatado:"00000.003554/2026-41", tipo_processo:{nome:"Pessoal: Capacitação / Treinamento"},especificacao:"Curso de gestão de projetos — maio/2026",   situacao:"A", data_autuacao:"2026-03-02" },
-      { protocolo_formatado:"00000.004102/2026-88", tipo_processo:{nome:"Aquisição de Material Permanente"}, especificacao:"Aquisição de mobiliário — sala de reuniões", situacao:"A", data_autuacao:"2026-03-18" },
-      { protocolo_formatado:"00000.005677/2026-23", tipo_processo:{nome:"Licitação: Pregão Eletrônico"},      especificacao:"Pregão nº 003/2026 — licenças de software",  situacao:"A", data_autuacao:"2026-04-05" },
-      { protocolo_formatado:"00000.006340/2026-56", tipo_processo:{nome:"Auditoria Interna"},                 especificacao:"Auditoria de conformidade — 1º semestre",    situacao:"A", data_autuacao:"2026-04-22" },
-      { protocolo_formatado:"00000.007019/2026-34", tipo_processo:{nome:"Contrato: Celebração"},              especificacao:"Contrato de link de internet dedicado",       situacao:"A", data_autuacao:"2026-05-01" },
-      { protocolo_formatado:"00000.008800/2026-02", tipo_processo:{nome:"Pessoal: Capacitação / Treinamento"},especificacao:"Treinamento de segurança da informação",      situacao:"A", data_autuacao:"2026-05-12" },
-    ]
-  },
-  processos_concluidos: { total_registros: 312 },
-  processos_retornados: { total_registros: 5 },
-  documentos: {
-    registros: [
-      { protocolo_formatado:"0948712", tipo_documento:{nome:"Ofício"},       descricao:"Ofício nº 142/2026 — Solicitação de dotação orçamentária", data_geracao:"2026-05-25", assinado:true  },
-      { protocolo_formatado:"0948650", tipo_documento:{nome:"Despacho"},     descricao:"Despacho de aprovação — aquisição notebooks",               data_geracao:"2026-05-24", assinado:true  },
-      { protocolo_formatado:"0948601", tipo_documento:{nome:"Nota Técnica"}, descricao:"NT nº 018/2026 — Estudo técnico pregão licenças",            data_geracao:"2026-05-23", assinado:false },
-      { protocolo_formatado:"0948544", tipo_documento:{nome:"Memorando"},    descricao:"Memorando nº 055/2026 — Informações para auditoria",         data_geracao:"2026-05-22", assinado:true  },
-      { protocolo_formatado:"0948490", tipo_documento:{nome:"Contrato"},     descricao:"Contrato nº 007/2026 — manutenção predial",                  data_geracao:"2026-05-20", assinado:true  },
-    ]
-  },
-  tipos_processo: new Array(10).fill(0),
-  unidades:       new Array(12).fill(0),
-  config: { unidade:"110000592", orgao:"0" },
+// ─── CONFIG ───────────────────────────────────────────────────────────────────
+// Unidade padrão — pode ser sobrescrita via ?unidade=ID na URL
+const params   = new URLSearchParams(location.search);
+const UNIDADE  = params.get('unidade') || '110000592';
+const PAGE_REG = 50;
 
-  // Série mensal — simulando GET /v1/estatisticas/processos?agrupamento=mes&ano=2025,2026
-  evolucao_mensal: {
-    labels:     ["Jun/25","Jul/25","Ago/25","Set/25","Out/25","Nov/25","Dez/25","Jan/26","Fev/26","Mar/26","Abr/26","Mai/26"],
-    abertos:    [18, 24, 21, 30, 27, 19, 14, 31, 35, 29, 42, 47],
-    concluidos: [15, 20, 25, 22, 30, 28, 18, 26, 32, 38, 35, 40],
-    retornados: [ 2,  3,  1,  4,  2,  5,  1,  3,  4,  2,  6,  5],
-  }
-};
-
-// ─── ESTADO DOS FILTROS ───────────────────────────────────────────────────────
+// ─── ESTADO ───────────────────────────────────────────────────────────────────
+let allProcessos = [];           // cache da última busca
 const F = { search:'', tipo:'', situacao:'A', de:'', ate:'' };
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 const $  = id => document.getElementById(id);
 const esc = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-
 function hl(text, term) {
   if (!term) return esc(text);
-  const re = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi');
-  return esc(text).replace(re, '<mark>$1</mark>');
+  return esc(text).replace(new RegExp('('+term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark>$1</mark>');
 }
-
 const sitTag = s => ({
-  A: '<span class="tag tag-g">Aberto</span>',
-  C: '<span class="tag tag-b">Concl.</span>',
-  R: '<span class="tag tag-y">Ret.</span>',
+  A:'<span class="tag tag-g">Aberto</span>',
+  C:'<span class="tag tag-b">Concl.</span>',
+  R:'<span class="tag tag-y">Ret.</span>',
 }[s] ?? `<span class="tag tag-b">${esc(s)}</span>`);
 
-// ─── APLICAR FILTROS ──────────────────────────────────────────────────────────
-function filtered() {
-  return MOCK.processos_abertos.registros.filter(p => {
-    const num   = (p.protocolo_formatado ?? '').toLowerCase();
-    const spec  = (p.especificacao ?? '').toLowerCase();
-    const tipo  = p.tipo_processo?.nome ?? '';
-    const sit   = p.situacao ?? 'A';
-    const data  = (p.data_autuacao ?? '').slice(0, 10);
-    const term  = F.search.toLowerCase();
-
-    if (term   && !num.includes(term) && !spec.includes(term)) return false;
-    if (F.tipo && tipo !== F.tipo)                              return false;
-    if (F.situacao && sit !== F.situacao)                       return false;
-    if (F.de   && data < F.de)                                  return false;
-    if (F.ate  && data > F.ate)                                 return false;
-    return true;
-  });
+// ─── API CLIENT ───────────────────────────────────────────────────────────────
+async function seiGet(path, extraParams = {}) {
+  const qs = new URLSearchParams({ _path: path, ...extraParams }).toString();
+  const res = await fetch(`/api/sei?${qs}`);
+  const data = await res.json();
+  if (!res.ok) throw Object.assign(new Error(data.message || `HTTP ${res.status}`), { data, status: res.status });
+  return data;
 }
 
-function hasActiveFilters() {
-  return F.search || F.tipo || F.situacao !== 'A' || F.de || F.ate;
+// ─── STATUS UI ────────────────────────────────────────────────────────────────
+function setStatus(state, msg) {
+  const dot   = $('live-dot');
+  const label = $('live-label');
+  const pill  = $('status-pill');
+  dot.className   = 'live-dot ' + state;
+  label.textContent = msg;
+  pill.style.display = state === 'ok' ? '' : 'none';
+  $('btn-retry').style.display = state === 'err' ? '' : 'none';
+  $('sb-status').textContent = msg;
+  $('sb-status').style.color = state === 'ok' ? 'var(--green)' : state === 'err' ? 'var(--red)' : 'var(--blue)';
 }
 
-// ─── RENDER ───────────────────────────────────────────────────────────────────
-function render() {
-  // sidebar / KPIs estáticos
-  $('sb-unidade').textContent   = MOCK.config.unidade;
-  $('sb-orgao').textContent     = MOCK.config.orgao;
-  $('k-abertos').textContent    = MOCK.processos_abertos.total_registros;
-  $('k-concluidos').textContent = MOCK.processos_concluidos.total_registros;
-  $('k-retornados').textContent = MOCK.processos_retornados.total_registros;
-  $('k-docs').textContent       = MOCK.documentos.registros.length;
-  $('k-tipos').textContent      = MOCK.tipos_processo.length;
-  $('k-unidades').textContent   = MOCK.unidades.length;
-
-  // Preencher select de tipos (uma vez)
-  if ($('f-tipo').options.length === 1) {
-    const tipos = [...new Set(MOCK.processos_abertos.registros.map(p => p.tipo_processo?.nome ?? ''))].sort();
-    tipos.forEach(t => {
-      const o = document.createElement('option');
-      o.value = t; o.textContent = t;
-      $('f-tipo').appendChild(o);
-    });
-  }
-
-  renderProcessos();
-  renderDocs();
+function showError(msg, detail) {
+  const banner = $('err-banner');
+  $('err-msg').textContent = msg;
+  const detEl = $('err-detail');
+  if (detail) { detEl.textContent = JSON.stringify(detail, null, 2); detEl.style.display = ''; }
+  else detEl.style.display = 'none';
+  banner.classList.add('show');
 }
 
-function renderProcessos() {
-  const procs = filtered();
-  const term  = F.search;
+function clearError() {
+  $('err-banner').classList.remove('show');
+}
 
-  // contador e botão limpar
-  $('fc-n').textContent = procs.length;
-  $('btn-clear').classList.toggle('hidden', !hasActiveFilters());
+// ─── RENDERIZAÇÃO ─────────────────────────────────────────────────────────────
+function renderKpi(id, val) { $(id).textContent = val ?? '—'; }
 
+function renderProcessos(procs) {
+  const term = F.search;
   $('badge-proc').textContent = procs.length;
+  $('fc-n').textContent       = procs.length;
+  $('btn-clear').classList.toggle('hidden', !F.search && !F.tipo && F.situacao==='A' && !F.de && !F.ate);
+
+  // Preenche select de tipos (uma vez)
+  if ($('f-tipo').options.length === 1) {
+    const tipos = [...new Set(allProcessos.map(p=>p.tipo_processo?.nome??''))].sort();
+    tipos.forEach(t => { const o=document.createElement('option'); o.value=t; o.textContent=t; $('f-tipo').appendChild(o); });
+  }
 
   if (!procs.length) {
     $('proc-tbody').innerHTML = '<tr><td colspan="4" class="empty">Nenhum processo corresponde aos filtros.</td></tr>';
   } else {
-    $('proc-tbody').innerHTML = procs.map(p => `
-      <tr>
-        <td><span class="proc-num">${hl(p.protocolo_formatado, term)}</span></td>
-        <td>
-          <span class="proc-tipo">${esc(p.tipo_processo?.nome)}</span>
-          <span class="proc-spec">${hl(p.especificacao, term)}</span>
-        </td>
-        <td><span class="proc-date">${esc(String(p.data_autuacao??'').slice(0,10))}</span></td>
+    $('proc-tbody').innerHTML = procs.slice(0,20).map(p => {
+      const num  = p.protocolo_formatado ?? p.numero ?? '—';
+      const tipo = p.tipo_processo?.nome ?? '—';
+      const spec = p.especificacao ?? '';
+      const data = String(p.data_autuacao??'').slice(0,10);
+      return `<tr>
+        <td><span class="proc-num">${hl(num,term)}</span></td>
+        <td><span class="proc-tipo">${esc(tipo)}</span><span class="proc-spec">${hl(spec,term)}</span></td>
+        <td><span class="proc-date">${esc(data)}</span></td>
         <td>${sitTag(p.situacao)}</td>
-      </tr>`).join('');
+      </tr>`;
+    }).join('');
   }
 
-  // bar chart reativo
+  // Bar chart
   const counter = {};
-  procs.forEach(p => {
-    const t = p.tipo_processo?.nome ?? 'Sem tipo';
-    counter[t] = (counter[t] ?? 0) + 1;
-  });
-  const sorted = Object.entries(counter).sort((a,b) => b[1]-a[1]).slice(0,6);
-  const maxVal = sorted[0]?.[1] ?? 1;
+  procs.forEach(p => { const t=p.tipo_processo?.nome??'Sem tipo'; counter[t]=(counter[t]??0)+1; });
+  const sorted = Object.entries(counter).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const maxV = sorted[0]?.[1] ?? 1;
   $('badge-tipos').textContent = sorted.length + ' tipos';
   $('bars').innerHTML = sorted.length
-    ? sorted.map(([nome, qtd]) => `
-        <div>
-          <div class="bar-row">
-            <span class="bar-name">${esc(nome)}</span>
-            <span class="bar-n">${qtd}</span>
-          </div>
-          <div class="bar-track">
-            <div class="bar-fill" style="width:${Math.round(qtd/maxVal*100)}%"></div>
-          </div>
-        </div>`).join('')
+    ? sorted.map(([nome,qtd])=>`<div>
+        <div class="bar-row"><span class="bar-name">${esc(nome)}</span><span class="bar-n">${qtd}</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:${Math.round(qtd/maxV*100)}%"></div></div>
+      </div>`).join('')
     : '<div class="empty">Sem dados</div>';
 }
 
-function renderDocs() {
-  const docs = MOCK.documentos.registros;
-  $('badge-docs').textContent = docs.length;
-  $('doc-list').innerHTML = docs.map(d => {
-    const tipo = d.tipo_documento?.nome ?? 'DOC';
-    return `
-    <div class="doc-row">
-      <div class="doc-icon">${esc(tipo.substring(0,3).toUpperCase())}</div>
-      <div class="doc-info">
-        <div class="doc-name">${esc(d.descricao || tipo)}</div>
-        <div class="doc-meta">${esc(d.protocolo_formatado)} · ${esc(tipo)} · ${esc(String(d.data_geracao??'').slice(0,10))}</div>
-      </div>
-      ${d.assinado ? '<span class="tag tag-g">Assinado</span>' : '<span class="tag tag-y">Pendente</span>'}
-    </div>`;
-  }).join('');
+function filtered() {
+  const term = F.search.toLowerCase();
+  return allProcessos.filter(p => {
+    const num  = (p.protocolo_formatado??'').toLowerCase();
+    const spec = (p.especificacao??'').toLowerCase();
+    const tipo = p.tipo_processo?.nome ?? '';
+    const sit  = p.situacao ?? 'A';
+    const data = String(p.data_autuacao??'').slice(0,10);
+    if (term    && !num.includes(term) && !spec.includes(term)) return false;
+    if (F.tipo  && tipo !== F.tipo)    return false;
+    if (F.situacao && sit !== F.situacao) return false;
+    if (F.de    && data < F.de)        return false;
+    if (F.ate   && data > F.ate)       return false;
+    return true;
+  });
 }
 
-// ─── EVENTOS DOS FILTROS ──────────────────────────────────────────────────────
+function renderDocs(docs) {
+  $('badge-docs').textContent = docs.length;
+  $('doc-list').innerHTML = docs.length
+    ? docs.map(d => {
+        const tipo = d.tipo_documento?.nome ?? d.serie?.nome ?? 'DOC';
+        const desc = d.descricao ?? d.nome ?? tipo;
+        const num  = d.protocolo_formatado ?? d.numero ?? '—';
+        const data = String(d.data_geracao??'').slice(0,10);
+        const sign = d.assinado ?? (d.sta_assinado === 'S');
+        return `<div class="doc-row">
+          <div class="doc-icon">${esc(tipo.substring(0,3).toUpperCase())}</div>
+          <div class="doc-info">
+            <div class="doc-name">${esc(desc)}</div>
+            <div class="doc-meta">${esc(num)} · ${esc(tipo)} · ${esc(data)}</div>
+          </div>
+          ${sign ? '<span class="tag tag-g">Assinado</span>' : '<span class="tag tag-y">Pendente</span>'}
+        </div>`;
+      }).join('')
+    : '<div class="empty">Nenhum documento encontrado.</div>';
+}
 
-// Busca (debounce 200ms)
-let searchTimer;
-$('f-search').addEventListener('input', e => {
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => { F.search = e.target.value.trim(); renderProcessos(); }, 200);
-});
+// ─── GRÁFICO ──────────────────────────────────────────────────────────────────
+let evoChart = null;
+const dsVisible = { abertos:true, concluidos:true, retornados:true };
 
-// Tipo
-$('f-tipo').addEventListener('change', e => { F.tipo = e.target.value; renderProcessos(); });
+function initChart(evo) {
+  if (evoChart) { evoChart.destroy(); evoChart = null; }
+  Chart.defaults.color = '#364d66';
+  Chart.defaults.borderColor = '#1f2f42';
+  Chart.defaults.font.family = "'JetBrains Mono',monospace";
+  Chart.defaults.font.size   = 10;
 
-// Situação (toggle: clica no ativo para deselecionar)
-document.querySelectorAll('.sit-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const sit = btn.dataset.sit;
-    F.situacao = (F.situacao === sit) ? '' : sit;
-    document.querySelectorAll('.sit-btn').forEach(b => {
-      b.className = 'sit-btn' + (F.situacao === b.dataset.sit ? ` active-${b.dataset.sit}` : '');
+  function ds(key, label, color) {
+    return {
+      label, data: evo[key],
+      borderColor: color, backgroundColor: color.replace(')',', .08)').replace('rgb','rgba'),
+      borderWidth:2, pointRadius:3, pointHoverRadius:6,
+      pointBackgroundColor:color, pointBorderColor:'transparent',
+      fill:true, tension:.4, hidden:!dsVisible[key],
+    };
+  }
+
+  evoChart = new Chart($('evo-chart'), {
+    type:'line',
+    data: {
+      labels: evo.labels,
+      datasets: [
+        ds('abertos',   'Abertos',    '#1fd17a'),
+        ds('concluidos','Concluídos', '#3d9bff'),
+        ds('retornados','Retornados', '#f0b429'),
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      interaction:{ mode:'index', intersect:false },
+      animation:{ duration:600, easing:'easeOutQuart' },
+      plugins: {
+        legend:{ display:false },
+        tooltip:{
+          backgroundColor:'#141c24', borderColor:'#2d4460', borderWidth:1, padding:10,
+          titleColor:'#d4e4f4', bodyColor:'#6b8aaa',
+          titleFont:{size:11,weight:'600'}, bodyFont:{size:10},
+          callbacks:{ label: i => `  ${i.dataset.label}: ${i.formattedValue}` }
+        }
+      },
+      scales:{
+        x:{ grid:{color:'rgba(31,47,66,.6)'}, ticks:{color:'#364d66',maxRotation:0}, border:{color:'#1f2f42'} },
+        y:{ grid:{color:'rgba(31,47,66,.6)'}, ticks:{color:'#364d66',stepSize:10}, border:{color:'#1f2f42'}, min:0 }
+      }
+    }
+  });
+
+  document.querySelectorAll('.ctgl').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.ds;
+      dsVisible[key] = !dsVisible[key];
+      btn.classList.toggle('on', dsVisible[key]);
+      const d = evoChart.data.datasets.find(d => ({abertos:'Abertos',concluidos:'Concluídos',retornados:'Retornados'})[key] === d.label);
+      if (d) { d.hidden = !dsVisible[key]; evoChart.update(); }
     });
-    renderProcessos();
   });
-});
+}
 
-// Datas
-$('f-de').addEventListener('change',  e => { F.de  = e.target.value; renderProcessos(); });
-$('f-ate').addEventListener('change', e => { F.ate = e.target.value; renderProcessos(); });
-
-// Limpar tudo
-$('btn-clear').addEventListener('click', () => {
-  F.search = ''; F.tipo = ''; F.situacao = 'A'; F.de = ''; F.ate = '';
-  $('f-search').value = '';
-  $('f-tipo').value   = '';
-  $('f-de').value     = '';
-  $('f-ate').value    = '';
-  document.querySelectorAll('.sit-btn').forEach(b => {
-    b.className = 'sit-btn' + (b.dataset.sit === 'A' ? ' active-A' : '');
+// Agrega processos por mês para o gráfico (usa os dados já carregados)
+function buildEvoFromProcessos(procs) {
+  const buckets = {};
+  procs.forEach(p => {
+    const m = String(p.data_autuacao ?? '').slice(0,7); // "2026-05"
+    if (!m) return;
+    if (!buckets[m]) buckets[m] = { A:0, C:0, R:0 };
+    buckets[m][p.situacao ?? 'A']++;
   });
-  renderProcessos();
-});
-
-// ─── GRÁFICO DE EVOLUÇÃO ──────────────────────────────────────────────────────
-const EVO = MOCK.evolucao_mensal;
-
-// Estado de visibilidade das séries
-const dsVisible = { abertos: true, concluidos: true, retornados: true };
-
-const chartColors = {
-  abertos:    { line: '#1fd17a', fill: 'rgba(31,209,122,.08)' },
-  concluidos: { line: '#3d9bff', fill: 'rgba(61,155,255,.08)' },
-  retornados: { line: '#f0b429', fill: 'rgba(240,180,41,.08)' },
-};
-
-Chart.defaults.color          = '#364d66';
-Chart.defaults.borderColor    = '#1f2f42';
-Chart.defaults.font.family    = "'JetBrains Mono', monospace";
-Chart.defaults.font.size      = 10;
-
-function makeDataset(key, label) {
-  const c = chartColors[key];
+  const meses = Object.keys(buckets).sort().slice(-12);
   return {
-    label,
-    data: EVO[key],
-    borderColor: c.line,
-    backgroundColor: c.fill,
-    borderWidth: 2,
-    pointRadius: 3,
-    pointHoverRadius: 6,
-    pointBackgroundColor: c.line,
-    pointBorderColor: 'transparent',
-    fill: true,
-    tension: 0.4,
-    hidden: !dsVisible[key],
+    labels:     meses.map(m => { const [y,mo]=m.split('-'); return `${mo}/${y.slice(2)}`; }),
+    abertos:    meses.map(m => buckets[m].A),
+    concluidos: meses.map(m => buckets[m].C),
+    retornados: meses.map(m => buckets[m].R),
   };
 }
 
-const evoChart = new Chart(document.getElementById('evo-chart'), {
-  type: 'line',
-  data: {
-    labels: EVO.labels,
-    datasets: [
-      makeDataset('abertos',    'Abertos'),
-      makeDataset('concluidos', 'Concluídos'),
-      makeDataset('retornados', 'Retornados'),
-    ]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    interaction: { mode: 'index', intersect: false },
-    animation: { duration: 600, easing: 'easeOutQuart' },
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        backgroundColor: '#141c24',
-        borderColor: '#2d4460',
-        borderWidth: 1,
-        padding: 10,
-        titleColor: '#d4e4f4',
-        bodyColor: '#6b8aaa',
-        titleFont: { size: 11, weight: '600' },
-        bodyFont:  { size: 10 },
-        callbacks: {
-          title: items => items[0].label,
-          label: item => `  ${item.dataset.label}: ${item.formattedValue}`,
-        }
-      }
-    },
-    scales: {
-      x: {
-        grid:   { color: 'rgba(31,47,66,.6)' },
-        ticks:  { color: '#364d66', maxRotation: 0 },
-        border: { color: '#1f2f42' },
-      },
-      y: {
-        grid:   { color: 'rgba(31,47,66,.6)' },
-        ticks:  { color: '#364d66', stepSize: 10 },
-        border: { color: '#1f2f42' },
-        min: 0,
-      }
+// ─── CARGA DE DADOS ───────────────────────────────────────────────────────────
+async function loadAll() {
+  clearError();
+  setStatus('spin', 'Carregando…');
+  $('sb-unidade').textContent = UNIDADE;
+
+  try {
+    // Chamadas paralelas à API v2
+    const [rAbertos, rConcl, rRet, rDocs, rTipos, rUnidades] = await Promise.allSettled([
+      seiGet('/processos',              { id_unidade:UNIDADE, situacao:'A', pagina_registros:PAGE_REG }),
+      seiGet('/processos',              { id_unidade:UNIDADE, situacao:'C', pagina_registros:1 }),
+      seiGet('/processos',              { id_unidade:UNIDADE, situacao:'R', pagina_registros:1 }),
+      seiGet('/listar-documentos',      { id_unidade:UNIDADE, pagina_registros:10 }),
+      seiGet('/pesquisar-tipos-processo',{ pagina_registros:1 }),
+      seiGet('/listar-unidades'),
+    ]);
+
+    // Helper para extrair valor de Promise.allSettled
+    const val  = r => r.status === 'fulfilled' ? r.value : null;
+    const recs = r => { const v=val(r); return v?.registros ?? (Array.isArray(v)?v:[]) ?? []; };
+    const tot  = r => { const v=val(r); return v?.total_registros ?? recs(r).length; };
+
+    allProcessos = recs(rAbertos);
+
+    renderKpi('k-abertos',    tot(rAbertos));
+    renderKpi('k-concluidos', tot(rConcl));
+    renderKpi('k-retornados', tot(rRet));
+    renderKpi('k-docs',       recs(rDocs).length);
+    renderKpi('k-tipos',      tot(rTipos));
+    renderKpi('k-unidades',   Array.isArray(val(rUnidades)) ? val(rUnidades).length : tot(rUnidades));
+
+    renderProcessos(filtered());
+    renderDocs(recs(rDocs));
+
+    // Gráfico: agrega os processos carregados por mês
+    if (allProcessos.length > 0) {
+      initChart(buildEvoFromProcessos(allProcessos));
+    }
+
+    // Checa se alguma chamada principal falhou
+    const firstErr = [rAbertos, rDocs].find(r => r.status === 'rejected');
+    if (firstErr) {
+      showError(firstErr.reason?.message ?? 'Erro parcial na API', firstErr.reason?.data);
+      setStatus('err', 'Erro parcial');
+    } else {
+      setStatus('ok', 'Live');
+    }
+
+    $('setup-banner').classList.remove('show');
+
+  } catch (err) {
+    console.error(err);
+    setStatus('err', 'Falha');
+
+    if (err.data?.error === 'not_configured') {
+      $('setup-banner').classList.add('show');
+    } else {
+      showError(err.message, err.data);
     }
   }
-});
 
-// Toggle de séries
-document.querySelectorAll('.ctgl').forEach(btn => {
+  const ts = new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR');
+  $('footer-ts').textContent = 'Atualizado em ' + ts;
+}
+
+// ─── FILTROS ─────────────────────────────────────────────────────────────────
+let searchTimer;
+$('f-search').addEventListener('input', e => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => { F.search=e.target.value.trim(); renderProcessos(filtered()); }, 200);
+});
+$('f-tipo').addEventListener('change', e => { F.tipo=e.target.value; renderProcessos(filtered()); });
+document.querySelectorAll('.sit-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    const key = btn.dataset.ds;
-    dsVisible[key] = !dsVisible[key];
-    btn.classList.toggle('on', dsVisible[key]);
-    const ds = evoChart.data.datasets.find(d => d.label.toLowerCase().startsWith(key.slice(0,5).toLowerCase())
-      || (key === 'abertos' && d.label === 'Abertos')
-      || (key === 'concluidos' && d.label === 'Concluídos')
-      || (key === 'retornados' && d.label === 'Retornados'));
-    if (ds) { ds.hidden = !dsVisible[key]; evoChart.update(); }
+    const sit = btn.dataset.sit;
+    F.situacao = F.situacao===sit ? '' : sit;
+    document.querySelectorAll('.sit-btn').forEach(b => b.className='sit-btn'+(F.situacao===b.dataset.sit?` active-${b.dataset.sit}`:''));
+    renderProcessos(filtered());
   });
+});
+$('f-de').addEventListener('change',  e => { F.de=e.target.value;  renderProcessos(filtered()); });
+$('f-ate').addEventListener('change', e => { F.ate=e.target.value; renderProcessos(filtered()); });
+$('btn-clear').addEventListener('click', () => {
+  F.search=''; F.tipo=''; F.situacao='A'; F.de=''; F.ate='';
+  $('f-search').value=''; $('f-tipo').value=''; $('f-de').value=''; $('f-ate').value='';
+  document.querySelectorAll('.sit-btn').forEach(b => b.className='sit-btn'+(b.dataset.sit==='A'?' active-A':''));
+  renderProcessos(filtered());
 });
 
 // ─── CLOCK ────────────────────────────────────────────────────────────────────
 function tick() {
-  const now = new Date();
-  const s = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR');
-  $('clock').textContent     = s;
-  $('footer-ts').textContent = 'Gerado em ' + s;
+  const s = new Date().toLocaleDateString('pt-BR')+' '+new Date().toLocaleTimeString('pt-BR');
+  $('clock').textContent = s;
 }
 tick(); setInterval(tick, 1000);
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
-render();
+loadAll();
 </script>
 </body>
 </html>
