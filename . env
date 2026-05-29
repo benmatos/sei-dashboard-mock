@@ -1,0 +1,14 @@
+# Copie este arquivo para .env e preencha os valores.
+# No Vercel: Dashboard → seu projeto → Settings → Environment Variables
+
+# URL base da API mod-wssei v2
+# Obtenha pelo QR Code na barra lateral do SEI (menu esquerdo, rodapé)
+# Formato: https://sei.orgao.gov.br/sei/modulos/wssei/controlador_ws.php/api/v2
+SEI_BASE_URL=https://sei.exemplo.gov.br/sei/modulos/wssei/controlador_ws.php/api/v2
+
+# Credenciais do usuário SEI (mesmo login da interface web)
+SEI_USUARIO=seu.usuario
+SEI_SENHA=sua-senha
+
+# Código do órgão (valor após "orgao:" no QR Code — geralmente "0")
+SEI_ORGAO=0
